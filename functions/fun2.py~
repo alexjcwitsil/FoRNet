@@ -1,4 +1,0 @@
-def image(self):
-    import matplotlib.pyplot as plt
-    plt.ion()
-    plt.imshow(self.img)    
