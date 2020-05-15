@@ -1,0 +1,155 @@
+######################################
+## ---- Generate Blob Features ---- ##
+###                                ###
+## Read in raw images, choose a sigma#
+## and perform blob detection. Extr-##
+##-featurs from blobs and save output#
+######################################
+
+
+##################
+# IMPORT MODULES #
+##################
+
+import os
+import numpy as np
+import pandas as pd
+import cv2
+from scipy.stats import kurtosis, skew
+from matplotlib import pyplot as plt
+import pickle
+
+import fornet as fn
+
+os.chdir('/home/alexwitsil/python_packages/fornet')
+
+
+##############
+### INPUTS ###
+##############
+
+## Gaussian in the LoG algorithm
+gaus_sig = 8 ##10
+
+## are you extracting from the testing or training data
+training_or_testing = 'testing'
+
+
+#################################
+### SETUP RESULTS DIRECTORIES ###
+#################################
+## if you haven't done so already
+
+## where is the project
+project_path = '/home/alexwitsil/python_packages/fornet'
+
+## set up the results directories for this project
+fn.setup_result_dirs(project_path)
+
+
+##########################################
+## SAVING PATHS, DIRECTORIES, and FILES ##
+##########################################
+
+## check if there is a results dir
+cur_dirs = os.listdir('./')
+
+## make a results directory if need be
+if 'results' not in cur_dirs:
+    os.mkdir('./results/')
+
+## check if there is a training/testing directories
+cur_results_dirs = os.listdir('./results/')
+if training_or_testing + '_results' not in cur_results_dirs:
+    os.mkdir('./results/' + training_or_testing + '_results')
+
+## check if there is a blob features directory
+cur_testing_or_training_dirs = os.listdir('./results/' + training_or_testing + '_results')
+if 'blob_features' not in cur_testing_or_training_dirs:
+    os.mkdir('./results/' + training_or_testing + '_results/blob_features/')
+
+## what is the output saving path
+save_path = './results/' + training_or_testing + '_results/blob_features/'
+
+## list the current directories available in the output (save) locations
+save_dir_files = os.listdir(save_path)
+
+## define the output file directory name
+save_dir = 'sig' + str(gaus_sig)
+
+## check to see if there is an output directory associated with the Gaussian sigma
+missing_out_dir = save_dir not in save_dir_files
+
+## if missing the output directory create it.
+if missing_out_dir:
+    os.mkdir(save_path + save_dir)
+
+
+################
+# READ IN DATA #
+################
+
+# what is the raw image directory
+raw_img_dir = './data/' + training_or_testing + '/raw_images/'
+##raw_img_dir = './data/testing/raw_images/'
+
+# list the image files
+img_files = os.listdir(raw_img_dir)
+
+# loop over the image files
+j = 31 ##0
+while j < len(img_files):
+ 
+    # what is the current image
+    cur_img_file = img_files[j]
+
+    # read in raw (grayscaled) image
+    img_col = cv2.imread(raw_img_dir+cur_img_file, cv2.IMREAD_GRAYSCALE)
+
+    # check to see if the image is odd or even... force it to be odd
+    if(img_col.shape[0] % 2 == 0):
+        img_col = np.delete(img_col, -1, 0)
+
+    if(img_col.shape[1] % 2 == 0):
+        img_col = np.delete(img_col, -1, 1)
+
+    # convert the image from int (I think) to a float
+    img = np.float64(img_col)
+
+
+    ##################
+    # Blob Detection #
+    ##################
+
+    img_log = fn.log_bd(img, gaus_sig)
+
+
+    ######################
+    # Find Blobs Regions #
+    ######################
+
+    blob_img = fn.find_blobs(img_log)
+
+    
+    ######################
+    # FEATURE EXTRACTION #
+    ######################
+
+    blob_info = fn.extract_blob_features(img, blob_img)
+    
+    
+
+    # SAVING #
+    ## what is the file name to save
+    out_file = save_path + save_dir + '/' + cur_img_file[:-4] + '.pickle'
+    
+    
+    with open(out_file, 'w+b') as handle:
+        pickle.dump(img_blob_info, handle)
+
+    print(img_files[j])
+    j = j+1
+
+
+
+

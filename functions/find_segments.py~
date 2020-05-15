@@ -1,0 +1,45 @@
+import fornet as fn
+
+
+
+## Find all the annotations for the current image
+cur_img_annotation_ids = fn.parse_img_annotation_ids(cur_img_file, all_images, all_image_ids, all_annotation_image_ids)
+
+
+###############################
+### FEATURE EXTRACTION LOOP ###
+###############################
+
+## initilize a list to hold all the segmentation xy indicies
+all_seg_xys = list()
+
+## loop over all the annotation indices
+i=0
+while i<len(cur_img_annotation_ids):
+
+    ## define the current annotation (label) index
+    cur_annotation_ind = cur_img_annotation_ids[i] 
+
+
+    ###############################
+    ### GET THE CURRENT OUTLINE ###
+    ###############################
+
+    outline_xys = fn.parse_label_outline(train_info, cur_annotation_ind)
+
+    ## get outline label id
+    outline_id = fn.parse_label_id(train_info, cur_annotation_ind)
+
+
+    ##############################
+    ### FIND POINTS IN POLYGON ###
+    ##############################
+
+    seg_xys = fn.points_in_polygon(outline_xys)
+
+    ## break the segmented x and ys
+    seg_xs = seg_xys[0]
+    seg_ys = seg_xys[1]
+
+    ## get the segmentation values from the current image
+    cur_seg_vals =  img[seg_ys, seg_xs]

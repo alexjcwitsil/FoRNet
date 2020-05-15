@@ -1,0 +1,144 @@
+##########################################
+## ----          TRAINING          ---- ##
+###                                    ###
+##########################################
+
+import fornet as fn
+import json
+
+
+##############
+### INPUTS ###
+##############
+
+## Gaussian in the LoG algorithm
+gaus_sig = 8 ##10
+
+## where is the project
+project_path = '/home/alexwitsil/projects/isaid_imagery'
+
+# what is the raw image directory
+raw_img_dir = project_path + '/data/training/raw_images/'
+
+# list the image files
+img_files = os.listdir(raw_img_dir)
+
+
+####################################
+### READ IN TRAINING ANNOTATIONS ###
+####################################
+
+## read in the training information 
+with open(project_path + '/data/iSAID_train.json') as f:
+    train_info = json.load(f)
+    ## keys -> 'images', 'categories', 'annotations'
+
+
+###########################
+## PARSE ANNOTATION INFO ##
+###########################
+
+parsed_training_info = fn.parse_training_info(train_info)
+
+
+#########################
+### SETUP RESULT DIRS ###
+#########################
+
+## set up the results directories for this project
+fn.setup_result_dirs(gaus_sig, project_path)
+
+
+###########################
+## LOOP OVER IMAGE FILES ##
+###########################
+
+j = 27 #40 ##0
+while j < len(img_files):
+
+    ###########################
+    ## LOAD IN CURRENT IMAGE ##
+    ###########################
+
+    ## define the path to the current image
+    cur_img_file = img_files[j]
+    img_path = raw_img_dir + cur_img_file
+
+    ## load in the current image
+    img = fn.load_image(img_path, odd_dims=True)
+    
+    
+    ############################
+    ## GENERATE BLOB FEATURES ##
+    ############################
+
+    img_blob_info = fn.gen_blob_features(img, gaus_sig)
+
+
+    #################################
+    ## GENERATE SEGMENTED FEATURES ##
+    #################################
+
+    img_seg_info = fn.gen_segmented_features(img, cur_img_file, train_info, parsed_training_info)
+
+    
+    ##############################
+    ## GENERATE SEGMENTED IMAGE ##
+    ##############################
+
+    img_true_seg = fn.gen_segmented_image(img_seg_info)
+
+
+    ##################################
+    ## GENERATE BACKGROUND FEATURES ##
+    ##################################
+
+    img_bkg_info = fn.gen_background_features(img_blob_info, img_true_seg)
+
+
+    #################################
+    ## JOIN SEGMENTED AND BKG INFO ##
+    #################################
+
+    img_features = fn.join_seg_bkg_features(img_seg_info, img_bkg_info)
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    
+    ############
+    ## SAVING ##
+    ############
+    
+    ## what is the file name to save
+    out_file = save_path + save_dir + '/' + cur_img_file[:-4] + '.pickle'
+        
+    with open(out_file, 'w+b') as handle:
+        pickle.dump(img_blob_info, handle)
+
+    
+    print(img_files[j])
+    j = j+1

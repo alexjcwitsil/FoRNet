@@ -1,0 +1,183 @@
+############################################
+## ---- Generate Background Features ---- ##
+###                                      ###
+## Read in blob blob features, true image ##
+## segmentations and find all blobs that  ##
+## do not overlap.  Save these blob stati-##
+##-stics as background features.          ##
+############################################
+
+
+import os
+import numpy as np
+import pandas as pd
+import pickle
+from matplotlib import pyplot as plt
+
+os.chdir('/home/alexwitsil/python_packages/imagefx')
+
+
+##############
+### INPUTS ###
+##############
+
+## what is the category id of the background 
+bkg_cat_id = 0 ## this should be same for all scripts
+
+## Gaussian in the LoG algorithm.
+## NB this is not a filtering algoirthm but we need to choose the right blob features
+gaus_sig = 10 ##8
+
+
+#####################
+### FIND THE DATA ###
+#####################
+
+## which blob features to use?  Again depends on the Gaussia sigma
+blob_feature_dir = './results/training_results/blob_features/sig' + str(gaus_sig) + '/'
+
+## True and predicted directories
+true_seg_dir = './results/training_results/true_image_segmentations/'
+
+## list all the files in the training data
+feature_files = list(filter(lambda x: 'pickle' in x, os.listdir(blob_feature_dir)))
+
+
+##########################################
+## SAVING PATHS, DIRECTORIES, and FILES ##
+##########################################
+
+## Where to save the blob feature directory path
+save_path = './results/training_results/background_features/'
+
+## list the directories int he background feature path
+save_dir_files = os.listdir(background_feature_path)
+
+## define the output file directory name
+save_dir = 'sig' + str(gaus_sig)
+
+## check to see if there is an output directory associated with the Gaussian sigma
+missing_out_dir = save_dir not in save_dir_files
+
+## if missing the output directory, create it.
+if missing_out_dir:
+    os.mkdir(save_path + save_dir)
+
+
+## loop over each of the feature files 
+i=0
+
+while i<len(feature_files):
+
+    ###################
+    ## FIND THE DATA ##
+    ###################
+
+    ## what is the current feature file 
+    cur_file = feature_files[i]
+
+    # what is the feature file location
+    file_loc = blob_feature_dir + cur_file
+
+    ## what is the current image segmentation file
+    ##true_seg_dir = './results/true_image_segmentations/'
+    cur_true_seg_file = cur_file[:-7] + '.npy'
+
+
+    ###################
+    ## LOAD THE DATA ##
+    ###################
+
+    ## load in the current file's feature information
+    with open(file_loc, 'r+b') as handle:
+        img_feature_info = pickle.load(handle)
+
+    ## separate the features from blob indices
+    all_blob_stats = img_feature_info[1]
+    all_blob_inds = img_feature_info[2]
+
+    ## load the the true segmentation image
+    true_img = np.load(true_seg_dir + cur_true_seg_file)
+
+    ## FORCE TRUE SEGMENTATION TO HAVE ODD DIMS
+    ## recall predicted images are forced to have odd dimensions
+    ## therefore we need to force same constraint on true images
+    if(true_img.shape[0] % 2 == 0): 
+        true_img = np.delete(true_img,-1,0)
+    if(true_img.shape[1] % 2 == 0):
+        true_img = np.delete(true_img,-1,1)
+
+    ## binarize the true image such that all segments have value of 1
+    true_img_bin = true_img.copy()
+    true_img_bin[np.where(true_img> 0)] = 1
+
+    ## what are the column names in the bkg stats dataframe (with cat id)
+    bkg_stats_col_name = all_blob_stats.columns.tolist() + ['category_id']
+    
+    ## initilize a data frame to store cur img segmentation statistics 
+    bkg_img_seg_stats = pd.DataFrame(columns = bkg_stats_col_name)
+    
+    ## initilize a list to hold all the bkg image segmentation xy indicies
+    bkg_img_seg_xys = list()
+
+
+    
+    ## loop over all blobs
+    j=0
+    while j < len(all_blob_inds):
+
+        # what is the current blob xy indices
+        cur_blob_inds = all_blob_inds[j]
+
+        ## build a binary image populated soley by this blob
+        blob_img = np.zeros(true_img.shape)
+        blob_img[cur_blob_inds] = 1
+
+        ## find out if there is overlap between the blob image and true image
+        overlap_img = blob_img + true_img_bin
+
+        ## define boolean object stating if there is overlap
+        overlap_bool = (overlap_img==2).any()
+
+        ## if there is overlap move onto the next blob
+        if overlap_bool:
+            j=j+1
+            print('skipping ' + str(j))
+            continue
+
+        ## if there isn't overlap grab the blob statistics
+        cur_blob_stats = all_blob_stats.iloc[j]
+
+        ######################################
+        ### APPEND STATISTICS TO DATAFRAME ###
+        ######################################
+        
+        ## add the current stats to the bkg image segmentation statistics 
+        bkg_img_seg_stats.loc[j] = cur_blob_stats.tolist() + [bkg_cat_id]
+        
+        ## append the current segmentation xy inds to the all list
+        bkg_img_seg_xys.append(cur_blob_inds)
+        ##print(str(i) + ' ' + str(len(seg_xs)))
+
+        print('file: '+str(i)+' blob ' + str(j) + ' out of: ' +  str(len(all_blob_stats)))
+        j=j+1
+   
+
+    ############
+    ## SAVING ##
+    ############
+
+    # img_blob_info = [img.shape, all_blob_stats, blob_xy_inds]
+    bkg_img_training_info = [img_feature_info[0], bkg_img_seg_stats, bkg_img_seg_xys]
+
+    ## what is the file name to save
+    ##out_file = './results/training_results/background_features/' + cur_file[:-7] + '.pickle'
+    out_file = save_path + save_dir + '/' +  cur_file[:-7] + '.pickle'
+    
+    with open(out_file, 'w+b') as handle:
+        pickle.dump(bkg_img_training_info, handle)
+        
+
+    
+    i=i+1
+

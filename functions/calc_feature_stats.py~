@@ -1,0 +1,14 @@
+############################################
+## ---- Calculate Feature Statistics ---- ##
+###                                      ###
+## Given series of values, calculate stats##
+## (features).                            ##
+############################################
+
+import numpy as np
+from scipy.stats import kurtosis, skew
+
+
+def calc_feature_stats(vals):
+    
+    

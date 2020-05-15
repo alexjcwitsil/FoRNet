@@ -1,0 +1,2 @@
+def psig(self):
+    print(self.sigma)

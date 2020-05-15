@@ -1,0 +1,101 @@
+#########################################
+## ---- Generate Segmented Image  ---- ##
+###                                   ###
+#########################################
+
+import os
+import numpy as np
+import pandas as pd
+import cv2 
+import json
+from scipy.stats import kurtosis, skew
+from matplotlib import pyplot as plt
+import pickle
+
+os.chdir('/home/alexwitsil/python_packages/imagefx')
+
+
+############
+## INPUTS ##
+############
+
+## you can apply to training or testing results
+training_or_testing = 'testing'
+
+## labeled features dir
+labeled_features_dir = './results/' + training_or_testing + '_results/labeled_features/'
+
+## list all the files in the labeled features dir
+labeled_files = list(filter(lambda x: 'pickle' in x, os.listdir(labeled_features_dir)))
+
+## loop over each labeled file
+j=0
+while j<len(labeled_files):
+
+    ## cur file
+    cur_labeled_file = labeled_files[j]
+
+    # what is the file location
+    file_loc = labeled_features_dir + cur_labeled_file
+
+    ## read in training features to build the True labeled image
+    with open(file_loc, 'r+b') as handle:
+        img_labeled_info = pickle.load(handle)
+
+    ## isolate the labeled data features
+    labeled_data = img_labeled_info[1]
+
+    ## what is the image shape
+    img_shape = img_labeled_info[0]
+
+    ## grab the categor ids column
+    cat_ids = labeled_data.iloc[:,6]
+
+    ## gray all the segmented x and y indicies (locations)
+    seg_xys = img_labeled_info[2]
+
+    ## initilize the segmented image
+    seg_img = np.zeros(img_shape[0] * img_shape[1]).reshape(img_shape)
+
+    # loop over all the category ids to build a segmented image
+    # recall we don't need to plot the background... for now...
+    i=0
+    while i<(len(cat_ids)-1):
+
+        # current category
+        cur_cat = cat_ids.iloc[i]
+
+        ## current segment xs
+        cur_xys = seg_xys[i]
+
+        ## populate the segmented image with the current category id at the current xy locations
+        seg_img[cur_xys[1],cur_xys[0]] = cur_cat
+
+        i=i+1
+
+    
+    ############
+    ## SAVING ##
+    ############
+
+    save_file = cur_labeled_file[:-7] + '.npy'
+    save_path = './results/' + training_or_testing + '_results/true_image_segmentations/' + save_file
+    np.save(save_path, seg_img)
+
+    j=j+1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

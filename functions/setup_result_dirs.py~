@@ -1,0 +1,81 @@
+#################################
+## ---- Setup Directories ---- ##
+###                           ###
+## Setup the required director-##
+##-ies for the ForNet results. ##
+#################################
+import os
+
+def setup_result_dirs(project_path='/home/alexwitsil/python_packages/fornet'):
+
+    #######################
+    ## TOP LEVEL RESULTS ##
+    #######################
+    
+    ## check if there is a results dir
+    cur_dirs = os.listdir(project_path)
+
+    ## make a results directory if need be
+    if 'results' not in cur_dirs:
+        os.mkdir(project_path + '/results')
+
+
+    #######################
+    ## 2ND LEVEL RESULTS ##
+    #######################
+    
+    ## check if there is a training and testing directories
+    cur_results_dirs = os.listdir(project_path + '/results')
+    
+    if 'training_results' not in cur_results_dirs:
+        os.mkdir(project_path + '/results/training_results')
+
+    if 'testing_results' not in cur_results_dirs:
+        os.mkdir(project_path + '/results/testing_results')
+
+    if 'nn_models' not in cur_results_dirs:
+        os.mkdir(project_path + '/results/nn_models/')
+
+
+    #######################
+    ## 3RD LEVEL RESULTS ##
+    #######################
+
+    ## TRAINING RESULT DIRS 
+
+    ## check if there is a training blob features directory
+    cur_training_dirs = os.listdir(project_path + '/results/training_results')
+    
+    if 'blob_features' not in cur_training_dirs:
+        os.mkdir(project_path + '/results/' + 'training_results/blob_features/')
+
+    if 'labeled_features' not in cur_training_dirs:
+       os.mkdir(project_path + '/results/' + 'training_results/labeled_features/')
+
+    if 'true_image_segmentations' not in cur_training_dirs:
+       os.mkdir(project_path + '/results/' + 'training_results/true_image_segmentations/')
+
+    if 'background_features' not in cur_training_dirs:
+       os.mkdir(project_path + '/results/' + 'training_results/background_features/')
+
+
+    ## TESTING RESULT DIRS
+
+    ## check if there is a testing blob features directory
+    cur_testing_dirs = os.listdir(project_path + '/results/testing_results')
+    
+    if 'blob_features' not in cur_testing_dirs:
+        os.mkdir(project_path + '/results/' + 'testing_results/blob_features/')
+
+    if 'labeled_features' not in cur_testing_dirs:
+        os.mkdir(project_path + '/results/' + 'testing_results/labeled_features/')
+
+    if 'predictions' not in cur_testing_dirs:
+        os.mkdir(project_path + '/results/' + 'testing_results/predictions/')
+
+    if 'true_image_segmentations' not in cur_testing_dirs:
+        os.mkdir(project_path + '/results/' + 'testing_results/true_image_segmentations/')
+
+
+
+
