@@ -6,7 +6,7 @@
 import fornet as fn
 import json
 import pickle
-
+import os 
 
 def train(project_path, gaus_sigs):
 
@@ -67,7 +67,7 @@ def train(project_path, gaus_sigs):
         ## LOOP OVER IMAGE FILES ##
         ###########################
 
-        j = 0# 40 #27 
+        j = 40 #0 #27 
         while j < len(img_files):
 
             ###########################

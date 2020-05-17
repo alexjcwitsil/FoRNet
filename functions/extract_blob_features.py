@@ -18,7 +18,7 @@ def extract_blob_features(raw_img, blob_img):
     blob_xy_inds = list()
 
     # loop over each label
-    i = 0
+    i = 1#0 ## NOTE WE START AT 1 HERE! 
     while(i <= blob_total):
 
         # what is the current blob label as a boolean matrix
@@ -54,10 +54,10 @@ def extract_blob_features(raw_img, blob_img):
 
         ## save the current feature stats
         
-        if i == 0:
+        if i == 1:
             ## initilize the image segmentation stats if first iteration
             all_blob_stats = cur_stats
-        elif i > 0:
+        elif i > 1:
             ## append the current stats to the all blob stats dataframe
             cur_stats_list = cur_stats.iloc[0].tolist()
             all_blob_stats.loc[i] = cur_stats_list

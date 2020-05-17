@@ -5,17 +5,16 @@
 
 #Dependencies
 import numpy as np
-import pandas as pd
+##import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 import keras
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.models import load_model
-from sklearn.metrics import accuracy_score
+#from keras.models import load_model
+#from sklearn.metrics import accuracy_score
 
-os.chdir('/home/alexwitsil/python_packages/imagefx')
 
 def train_vanilla_ann(labeled_features,num_epochs=5):
 

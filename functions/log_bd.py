@@ -5,7 +5,7 @@ def log_bd(img, sig):
 
     ## filter with a Gaussian kernal
     ## this is WAY too slow
-    ## img_gaus_filt = cv2.GaussianBlur(img, img.shape[0:2], sig)
+    ##img_gaus_filt = cv2.GaussianBlur(img, img.shape[0:2], sig)
 
     ## build a gaussian
     gaus_mask = fn.build_gaus2d(img.shape[0],img.shape[1],sig)

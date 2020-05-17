@@ -36,7 +36,7 @@ def gen_segmented_image(seg_info):
         cur_xys = seg_xys[i]
 
         ## populate the segmented image with the current category id at the current xy locations
-        seg_img[cur_xys[1],cur_xys[0]] = cur_cat
+        seg_img[cur_xys[1],cur_xys[2]] = cur_cat
 
         i=i+1
 

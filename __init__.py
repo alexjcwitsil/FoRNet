@@ -19,6 +19,8 @@ from fornet.functions.join_seg_bkg_features import join_seg_bkg_features
 from fornet.functions.build_gaus2d import build_gaus2d
 from fornet.functions.scale_features import scale_features
 from fornet.functions.train_vanilla_ann import train_vanilla_ann
+from fornet.functions.train import train
+
 
 
 
