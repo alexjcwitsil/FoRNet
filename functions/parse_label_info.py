@@ -1,22 +1,22 @@
 ###################################
-## ---- Parse Training Info ---- ##
+## ----   Parse Label Info  ---- ##
 ###                             ###
-## Given a training information  ##
+## Given a label information     ##
 ## object parse (extract) some   ##
 ## useful information.           ##
 ###################################
 
 import numpy as np
 
-def parse_training_info(training_info):
+def parse_label_info(label_info):
 
     ## make a list of all the annotation image files and ids
     all_images = []
     all_image_ids = [] 
     i=0
-    while i < len(training_info['images']):
-        all_images.append(training_info['images'][i]['file_name'])
-        all_image_ids.append(training_info['images'][i]['id'])
+    while i < len(label_info['images']):
+        all_images.append(label_info['images'][i]['file_name'])
+        all_image_ids.append(label_info['images'][i]['id'])
         i=i+1
 
     ## convert all annotation image file names to np array
@@ -24,7 +24,7 @@ def parse_training_info(training_info):
 
     ## separate the annotations out
     ## this is a LIST with each list element being a dictionary
-    all_annotations = training_info['annotations']
+    all_annotations = label_info['annotations']
 
     ## set up a list to hold the image ids
     all_annotation_image_ids = np.zeros(len(all_annotations))

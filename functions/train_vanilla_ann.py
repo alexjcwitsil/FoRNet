@@ -5,7 +5,7 @@
 
 #Dependencies
 import numpy as np
-##import pandas as pd
+import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
@@ -24,7 +24,8 @@ def train_vanilla_ann(labeled_features,num_epochs=5):
     ###############################
 
     ## remove any nan values
-    labeled_features = labeled_features[~np.isnan(labeled_features).any(axis=1)]
+    ##labeled_features = labeled_features[~np.isnan(labeled_features).any(axis=1)]
+    labeled_features = labeled_features[~pd.isnull(labeled_features).any(axis=1)]
 
     # isolate the features and the labels from the dataframe
     features_unnorm = labeled_features.drop(labels='category_id',axis=1)

@@ -18,7 +18,10 @@ def train(project_path, gaus_sigs):
     #gaus_sigs = [8, 10]
     
     ## where is the project
-    #project_path = '/home/alexwitsil/projects/isaid_imagery'
+    #project_path = '/home/alexwitsil/projects/isaid_imagery/'
+
+    ## setup/check the testing and training data dirs
+    fn.split_train_test(project_path + '/data/', test_size=0.2)
 
     # what is the raw image directory
     raw_img_path = project_path + '/data/training/raw_images/'
@@ -27,21 +30,26 @@ def train(project_path, gaus_sigs):
     img_files = os.listdir(raw_img_path)
 
 
-    ####################################
-    ### READ IN TRAINING ANNOTATIONS ###
-    ####################################
+    #################################
+    ### READ IN IMAGE ANNOTATIONS ###
+    #################################
+
+    ## find the json file (if not provided...)
+    label_info_file = [f for f in os.listdir(project_path + '/data/') if f.endswith('.json')][0]
+    with open(project_path + '/data/' + label_info_file) as f:
+        label_info = json.load(f)
 
     ## read in the training information 
-    with open(project_path + '/data/iSAID_train.json') as f:
-        train_info = json.load(f)
-        ## keys -> 'images', 'categories', 'annotations'
+    # with open(project_path + '/data/iSAID_train.json') as f:
+    #     label_info = json.load(f)
+    #     ## keys -> 'images', 'categories', 'annotations'
 
 
     ###########################
     ## PARSE ANNOTATION INFO ##
     ###########################
 
-    parsed_training_info = fn.parse_training_info(train_info)
+    parsed_label_info = fn.parse_label_info(label_info)
 
 
     #####################################
@@ -67,7 +75,7 @@ def train(project_path, gaus_sigs):
         ## LOOP OVER IMAGE FILES ##
         ###########################
 
-        j = 40 #0 #27 
+        j = 0 
         while j < len(img_files):
 
             ###########################
@@ -79,7 +87,12 @@ def train(project_path, gaus_sigs):
             img_path = raw_img_path + cur_img_file
 
             ## load in the current image
-            img = fn.load_image(img_path, odd_dims=True)
+            img_col = fn.load_image(img_path, gray=False, odd_dims=True)
+
+            #####
+            ## NOTE WE ARE ONLY LOOKING AT THE BLUE CHANNEL!!!!
+            #####
+            img = img_col[:,:,2]
 
 
             ############################
@@ -93,7 +106,7 @@ def train(project_path, gaus_sigs):
             ## GENERATE SEGMENTED FEATURES ##
             #################################
 
-            img_seg_info = fn.gen_segmented_features(img, cur_img_file, train_info, parsed_training_info)
+            img_seg_info = fn.gen_segmented_features(img, cur_img_file, label_info, parsed_label_info)
 
 
             ##############################
@@ -126,6 +139,7 @@ def train(project_path, gaus_sigs):
             if j > 0:
                 all_features =all_features.append(img_features_unnorm)
 
+            print('image: ' + str(j+1) + ' out of: ' + str(len(img_files)))
             j=j+1
 
 
@@ -133,7 +147,7 @@ def train(project_path, gaus_sigs):
         ### RUN ANN ###
         ###############
 
-        model_results = train_vanilla_ann(all_features,num_epochs=5)
+        model_results = fn.train_vanilla_ann(all_features,num_epochs=50)
 
         model = model_results[0]
         scaling_factors = model_results[1]
@@ -169,7 +183,7 @@ def train(project_path, gaus_sigs):
 
         ## save the scaling factors in the data
         with open(save_dir + scaling_factors_file,'w+b') as handle:
-            pickle.dump(sc, handle)
+            pickle.dump(scaling_factors, handle)
 
         # save model and architecture to single file
         model.save(save_dir + model_file)

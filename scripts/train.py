@@ -133,7 +133,7 @@ def train(project_path, gaus_sigs):
         ### RUN ANN ###
         ###############
 
-        model_results = train_vanilla_ann(all_features,num_epochs=5)
+        model_results = fn.train_vanilla_ann(all_features,num_epochs=5)
 
         model = model_results[0]
         scaling_factors = model_results[1]

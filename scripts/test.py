@@ -6,6 +6,7 @@ import fornet as fn
 import os
 import pickle
 import numpy as np
+import json
 import matplotlib.pyplot as plt
 from keras.models import load_model
 
@@ -16,17 +17,33 @@ from keras.models import load_model
 ##############
 ## how many guassian sigmas to use
 ## note these must be in a list
-gaus_sigs = [8, 10] 
+gaus_sigs = [8, 10, 15, 20 ] 
 
 ## where is the project directory
 ## note there must be data correctly stored within the project sub-directories
 project_path = '/home/alexwitsil/projects/isaid_imagery'
 
 
+#################################
+### READ IN IMAGE ANNOTATIONS ###
+#################################
 
-#####################
-### FIND THE DATA ###
-#####################
+## read in the training information 
+with open(project_path + '/data/iSAID_train.json') as f:
+    label_info = json.load(f)
+    ## keys -> 'images', 'categories', 'annotations'
+
+
+###########################
+## PARSE ANNOTATION INFO ##
+###########################
+
+parsed_label_info = fn.parse_label_info(label_info)
+
+
+##########################
+### FIND THE TEST DATA ###
+##########################
 
 ## what is the testing image path
 test_img_path = project_path + '/data/testing/raw_images/'
@@ -39,7 +56,7 @@ img_files = os.listdir(test_img_path)
 ### LOOP OVER THE IMAGES ###
 ############################
 
-i= 26 #31 # 0
+i=0
 while i < len(img_files):
 
     ## grab the current file
@@ -50,9 +67,27 @@ while i < len(img_files):
     img = fn.load_image(img_path, odd_dims=True)
 
     
+    #################################
+    ## GENERATE SEGMENTED FEATURES ##
+    #################################
+
+    img_seg_info = fn.gen_segmented_features(img, cur_img_file, label_info, parsed_label_info)
+
+
+    ##############################
+    ## GENERATE SEGMENTED IMAGE ##
+    ##############################
+
+    true_img_seg = fn.gen_segmented_image(img_seg_info)
+
+
     #####################################
     ### LOOP OVER THE GAUSSIAN SIGMAS ###
     #####################################
+
+    ## initilize a list to hold labeled and probability images
+    labeled_img_list = []
+    probability_img_list = []
 
     j=0
     while j < len(gaus_sigs):
@@ -64,7 +99,6 @@ while i < len(img_files):
         #################
         ## READ IN ANN ##
         #################
-
 
         ## Where is the model and scaling factors 
         model_dir = project_path + '/results/nn_models/sig' + str(cur_sig) + '/'
@@ -131,13 +165,43 @@ while i < len(img_files):
 
             k=k+1
 
+        ## add current labeled image to the list
+        labeled_img_list.append(labeled_img)
+        probability_img_list.append(probability_img)
 
-            plt.ion()
-            plt.imshow(labeled_img)
+
+        ## DME ##
+        plt.subplot(1,2,1)
+        plt.imshow(true_img_seg)
+        plt.subplot(1,2,2)
+        plt.imshow(labeled_img)
+        
+
+        
+        
+        j=j+1
+
+
+    ###############################
+    ### STACK AND REDUCE LABELS ###
+    ###############################
+
+    pred_img_seg = fn.stack_reduce_labels(labeled_img_list, probability_img_list)
+    
+    ## DME ##
+    plt.subplot(1,2,1)
+    plt.imshow(true_img_seg)
+    plt.subplot(1,2,2)
+    plt.imshow(pred_img_seg)
 
     
+    
+    ################
+    ### EVALUATE ###
+    ################
 
-
+    
+    
 
 
 

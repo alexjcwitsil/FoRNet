@@ -4,8 +4,8 @@ import numpy as np
 
 def gen_segmented_features(img,
                            cur_img_file,
-                           train_info,
-                           parsed_training_info):
+                           label_info,
+                           parsed_label_info):
 
     ## initilize a background image (pixel values not planes, bridges, etc)
     bkg_img = np.copy(img)
@@ -14,7 +14,7 @@ def gen_segmented_features(img,
     segment_locs = np.zeros(img.size).reshape(img.shape)
 
     ## Find all the annotations for the current image
-    cur_img_annotation_ids = fn.parse_img_annotation_ids(cur_img_file, parsed_training_info)
+    cur_img_annotation_ids = fn.parse_img_annotation_ids(cur_img_file, parsed_label_info)
 
     ##############################
     ### LOOP OVER ALL SEGMENTS ###
@@ -34,10 +34,10 @@ def gen_segmented_features(img,
         ### GET THE CURRENT OUTLINE ###
         ###############################
 
-        outline_xys = fn.parse_label_outline(train_info, cur_annotation_ind)
+        outline_xys = fn.parse_label_outline(label_info, cur_annotation_ind)
 
         ## get outline label id
-        outline_id = fn.parse_label_id(train_info, cur_annotation_ind)
+        outline_id = fn.parse_label_id(label_info, cur_annotation_ind)
 
         ##############################
         ### FIND POINTS IN POLYGON ###
@@ -76,7 +76,7 @@ def gen_segmented_features(img,
         ## append the current segmentation xy inds to the all list
         all_seg_xys.append(seg_xys)
 
-        print(f' {cur_img_file} segment {str(i)} out of: {str(len(cur_img_annotation_ids))}\r', end="")
+        print(f' extracting features from labeled segment {str(i)} out of: {str(len(cur_img_annotation_ids))}\r', end="")
      
         i=i+1
 
@@ -88,11 +88,11 @@ def gen_segmented_features(img,
     
     ## find the x and y (segmentation)  values of the background image
     seg_xys = np.where(bkg_img != 0)
-    seg_xs = seg_xys[0]
-    seg_ys = seg_xys[1]
+    seg_xs = seg_xys[1]
+    seg_ys = seg_xys[0]
     
     ## also save the current segementation values
-    cur_seg_vals =  bkg_img[seg_xs, seg_ys]
+    cur_seg_vals =  bkg_img[seg_ys, seg_xs]
 
     cur_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys)
 
@@ -101,6 +101,15 @@ def gen_segmented_features(img,
 
     ## transform to list so we can add it to the full stat dataframe
     cur_stats_list = cur_stats.loc[0].tolist()
+
+
+    ## before adding background stats, check if there are any seg stats
+    ## sometimes there are images without any segmentations...
+    if 'img_seg_stats' in dir():
+        img_seg_stats.loc[i] = cur_stats_list
+    elif 'img_seg_stats' not in dir():
+        img_seg_stats = cur_stats
+    
 
     #add the current stats list to the current image segmentation statistics 
     img_seg_stats.loc[i] = cur_stats_list

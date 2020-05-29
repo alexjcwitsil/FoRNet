@@ -11,6 +11,10 @@ import numpy as np
 
 def points_in_polygon(xy_array):
 
+    ## THIS LINE HELPS COMPLETE THE POLYGON...
+    ## appending the first row to the last column
+    xy_array = np.append(xy_array, xy_array[0,:].reshape(1,2), axis=0)
+
     ## make a polygon for the current segmentation with matlibplot Path
     seg_polygon = Path(xy_array,codes=None,closed=True)
 
