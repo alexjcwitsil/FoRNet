@@ -16,7 +16,7 @@ def gen_segmented_image(seg_info):
     img_shape = seg_info[0]
 
     ## grab the categor ids column
-    cat_ids = seg_stats.iloc[:,6]
+    cat_ids = seg_stats.iloc[:,seg_stats.shape[1]-1]
 
     ## gray all the segmented x and y indicies (locations)
     seg_xys = seg_info[2]

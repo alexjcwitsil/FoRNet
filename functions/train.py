@@ -14,12 +14,6 @@ def train(project_path, gaus_sigs):
     ### INPUTS ###
     ##############
 
-    ## Gaussian in the LoG algorithm
-    #gaus_sigs = [8, 10]
-    
-    ## where is the project
-    #project_path = '/home/alexwitsil/projects/isaid_imagery/'
-
     ## setup/check the testing and training data dirs
     fn.split_train_test(project_path + '/data/', test_size=0.2)
 
@@ -38,11 +32,6 @@ def train(project_path, gaus_sigs):
     label_info_file = [f for f in os.listdir(project_path + '/data/') if f.endswith('.json')][0]
     with open(project_path + '/data/' + label_info_file) as f:
         label_info = json.load(f)
-
-    ## read in the training information 
-    # with open(project_path + '/data/iSAID_train.json') as f:
-    #     label_info = json.load(f)
-    #     ## keys -> 'images', 'categories', 'annotations'
 
 
     ###########################
@@ -87,14 +76,8 @@ def train(project_path, gaus_sigs):
             img_path = raw_img_path + cur_img_file
 
             ## load in the current image
-            img_col = fn.load_image(img_path, gray=False, odd_dims=True)
-
-            #####
-            ## NOTE WE ARE ONLY LOOKING AT THE BLUE CHANNEL!!!!
-            #####
-            img = img_col[:,:,2]
-
-
+            img = fn.load_image(img_path, gray=False, odd_dims=True)
+            
             ############################
             ## GENERATE BLOB FEATURES ##
             ############################
@@ -116,18 +99,19 @@ def train(project_path, gaus_sigs):
             img_true_seg = fn.gen_segmented_image(img_seg_info)
 
 
-            ##################################
-            ## GENERATE BACKGROUND FEATURES ##
-            ##################################
+            ##############################
+            ## GENERATE INNER  FEATURES ##
+            ##############################
 
-            img_bkg_info = fn.gen_background_features(img_blob_info, img_true_seg)
+            img_inner_info = fn.gen_inner_features(img_blob_info, img_true_seg)
 
 
             #################################
             ## JOIN SEGMENTED AND BKG INFO ##
             #################################
 
-            img_features_unnorm = fn.join_seg_bkg_features(img_seg_info, img_bkg_info)
+            ##img_features_unnorm = fn.join_seg_bkg_features(img_seg_info, img_bkg_info)
+            img_features_unnorm = fn.join_seg_inner_features(img_seg_info, img_inner_info)
 
             ########################################
             ## ADD IMAGE FEATURES TO ALL FEATURES ##
@@ -147,7 +131,7 @@ def train(project_path, gaus_sigs):
         ### RUN ANN ###
         ###############
 
-        model_results = fn.train_vanilla_ann(all_features,num_epochs=50)
+        model_results = fn.train_vanilla_ann(all_features,num_epochs=300)
 
         model = model_results[0]
         scaling_factors = model_results[1]

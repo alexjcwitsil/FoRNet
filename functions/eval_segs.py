@@ -23,8 +23,12 @@ def eval_segs(true_img, pred_img):
     unique_pred = np.unique(pred_img)
     unique_true = np.unique(true_img)
 
-    ## setup a an array the ious for each image
-    ious = np.zeros(len(unique_pred))
+    ## combined the unique true and predicted labels
+    unique_all = np.unique(np.append(unique_true, unique_pred))
+
+    ## setup a an array the ious and label ids for each image
+    ious = np.zeros(len(unique_all))
+    ious[:] = np.nan
 
 
     ##################################
@@ -33,10 +37,11 @@ def eval_segs(true_img, pred_img):
     
     ## loop over every predicted segment label
     j=0
-    while j < len(unique_pred):
+    while j < len(unique_all):
 
         ## what is the current predicted label
-        cur_pred_label = unique_pred[j]
+        ##cur_pred_label = unique_pred[j]
+        cur_pred_label = unique_all[j]
 
         ## find where the predicted image matches the current predicted label
         cur_pred_label_xys = np.where(pred_img == cur_pred_label)
@@ -64,12 +69,18 @@ def eval_segs(true_img, pred_img):
         ## calculate area of overlap
         area_of_overlap = len(np.where(true_bin + pred_bin == 2)[0])
 
+        ## find areas that do not overlap
+        area_of_no_overlap = len(np.where(stacked_img == 1)[0])
+
+        ## calculate area of union
+        area_of_union = area_of_overlap + area_of_no_overlap
+
         ## true and predited areas that don't overlap
-        pred_isolated_area = len(np.where(stacked_img == 1)[0])
-        true_isolated_area = len(np.where(stacked_img == 1)[0])
+        ##pred_isolated_area = len(np.where(stacked_img == 1)[0])
+        ##true_isolated_area = len(np.where(stacked_img == 1)[0])
 
         ## calculate area of 
-        area_of_union = area_of_overlap + pred_isolated_area + true_isolated_area
+        ##area_of_union = area_of_overlap + pred_isolated_area + true_isolated_area
 
         ## calculate IoU
         cur_iou = area_of_overlap / area_of_union
@@ -80,6 +91,9 @@ def eval_segs(true_img, pred_img):
 
         
         j=j+1
+    #
+    ## append the label ids to the ious
+    ious_return = np.column_stack([unique_all, ious])
     
-    return(ious)
+    return(ious_return)
 

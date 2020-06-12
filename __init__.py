@@ -15,7 +15,7 @@ from fornet.functions.load_image import load_image
 from fornet.functions.gen_segmented_features import gen_segmented_features
 from fornet.functions.gen_segmented_image import gen_segmented_image
 from fornet.functions.gen_background_features import gen_background_features
-from fornet.functions.join_seg_bkg_features import join_seg_bkg_features
+from fornet.functions.join_seg_inner_features import join_seg_inner_features
 from fornet.functions.build_gaus2d import build_gaus2d
 from fornet.functions.scale_features import scale_features
 from fornet.functions.train_vanilla_ann import train_vanilla_ann
@@ -26,6 +26,9 @@ from fornet.functions.split_train_test import split_train_test
 from fornet.functions.labelstudio2coco import labelstudio2coco
 from fornet.functions.eval_segs import eval_segs
 from fornet.functions.test import test
+from fornet.functions.xcorr2d import xcorr2d
+from fornet.functions.gen_inner_features import gen_inner_features
+from fornet.functions.grayscale_img import grayscale_img
 
 
 

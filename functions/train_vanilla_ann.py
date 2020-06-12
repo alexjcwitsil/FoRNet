@@ -55,6 +55,15 @@ def train_vanilla_ann(labeled_features,num_epochs=5):
 
     ## add each layer to the ANN (Dense = fully connected)
     model.add(Dense(features.shape[1], input_dim=features.shape[1], activation="relu"))
+
+
+
+    ##model.add(Dense(features.shape[1], activation="relu"))
+    ##model.add(Dense(features.shape[1], activation="relu"))
+
+
+
+    
     model.add(Dense(labels.shape[1], activation="softmax"))
 
     ## specify the loss function and optimizer using compile functions

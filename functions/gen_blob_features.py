@@ -10,20 +10,28 @@ import fornet as fn
 
 def gen_blob_features(img, gaus_sig):
 
+    #######################
+    # Image Preprocessing #
+    #######################
+
+    ## create a grayscaled version of the image
+    gray_img = fn.grayscale_img(img)
+
+
     ##################
     # Blob Detection #
     ##################
 
-    img_log = fn.log_bd(img, gaus_sig)
+    gray_img_log = fn.log_bd(gray_img, gaus_sig)
 
 
     ######################
     # Find Blobs Regions #
     ######################
 
-    blob_img = fn.find_blobs(img_log)
+    blob_img = fn.find_blobs(gray_img_log)
 
-
+    
     ######################
     # FEATURE EXTRACTION #
     ######################

@@ -11,7 +11,7 @@ from keras.models import load_model
 
 def test(project_path, gaus_sigs):
 
-    
+     
     #################################
     ### READ IN IMAGE ANNOTATIONS ###
     #################################
@@ -52,7 +52,7 @@ def test(project_path, gaus_sigs):
         img_path = test_img_path + cur_img_file
 
         ## load in the current image
-        img = fn.load_image(img_path, odd_dims=True)
+        img = fn.load_image(img_path, gray=False, odd_dims=True)
 
 
         #################################
@@ -187,16 +187,6 @@ def test(project_path, gaus_sigs):
         np.save(pred_img_dir + cur_img_file[:-4] + '.npy', pred_img_seg)
 
 
-        ## DME ##
-        # plt.subplot(1,3,1)
-        # plt.imshow(img)
-        # plt.subplot(1,3,2)
-        # plt.imshow(true_img_seg)
-        # plt.subplot(1,3,3)
-        # plt.imshow(pred_img_seg)
-
-        # plt.savefig('/home/alexwitsil/projects/galapagos_image_classification/sandbox/pred_images/' + str(i+1000) + '.png')
-
         print('')
         print(f' Testing and evaluating file {str(i)} ({img_files[i]}) out of {str(len(img_files))}\r', end="")
         i=i+1
@@ -215,6 +205,17 @@ def test(project_path, gaus_sigs):
     true_img_files = os.listdir(true_img_dir)
     pred_img_files = os.listdir(pred_img_dir)
 
+
+    ## how many label categories are there
+    num_cats = len(label_info['categories']) + 1 # add one for background!
+
+    ## how many test images are there
+    num_imgs = len(true_img_files)
+
+    ## set up a pandas dataframe to hold the IOUS for each test image
+    all_ious = np.zeros(num_cats * num_imgs).reshape(num_imgs, num_cats)
+    all_ious[:] = np.nan
+
     ## loop over all image files
     i=0
     while i < len(true_img_files): 
@@ -226,26 +227,38 @@ def test(project_path, gaus_sigs):
         img_ious = fn.eval_segs(true_img, pred_img)
 
         ## set up an array of ious if first iteration
-        if i == 0:
+        ##if i == 0:
             ## set up an array to hold all the ious
-            all_ious = np.zeros(len(true_img_files)*len(img_ious)).reshape(len(true_img_files), len(img_ious))
+            ##all_ious = np.zeros(len(true_img_files)*len(img_ious)).reshape(len(true_img_files), len(img_ious))
 
-        all_ious[i,:] = img_ious
+        ##all_ious[i,:] = img_ious
+        ## populate the ious
+        j=0
+        while j < img_ious.shape[0]:
+            all_ious[i, int(img_ious[j,0])] = img_ious[j,1]
+            j=j+1
+        #
+        
 
         i=i+1
-
-        ## make a data frame with the ious and include the image name
+    #
+    ## make a data frame with the ious and include the image name
         iou_df = pd.DataFrame(all_ious)
-        iou_df['images'] = img_files
-        
-        
 
-        ## save the IOUs
-        iou_df.to_pickle(project_path + 'results/testing_results/image_ious.pickle')
-        ##np.save(project_path + 'results/testing_results/image_ious.npy', all_ious)
+    ## add the label names to the dataframe columns
+    col_names = [i['name'] for i in label_info['categories']]
+    iou_df.columns = ['background'] + col_names
+
+    iou_df['images'] = img_files
+
+
+
+    ## save the IOUs
+    iou_df.to_pickle(project_path + 'results/testing_results/image_ious.pickle')
+    np.save(project_path + 'results/testing_results/image_ious.npy', all_ious)
 
     
-    return(all_ious)
+    return(iou_df)
 
 
 

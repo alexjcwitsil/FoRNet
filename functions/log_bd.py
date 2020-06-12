@@ -1,5 +1,6 @@
 import fornet as fn
 import cv2
+import numpy as np
 
 def log_bd(img, sig):
 
@@ -15,7 +16,7 @@ def log_bd(img, sig):
 
     ## Laplacian of Gaussain
     img_log = cv2.Laplacian(img_gaus_filt, -1)
-    
+
     ## return the LoG image
     return(img_log)
 

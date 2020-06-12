@@ -1,17 +1,26 @@
 import fornet as fn
 import numpy as np
+import pandas as pd
 
 
 def gen_segmented_features(img,
                            cur_img_file,
                            label_info,
                            parsed_label_info):
+    
+    ## check if the raw image is grayscale or color.
+    ## and force it to color (i.e. have 3 dimensions)
+    if len(img.shape) == 2:
+        col_img = np.expand_dims(img,axis=2)
+    elif len(img.shape) == 3:
+        col_img = img
+    #
 
     ## initilize a background image (pixel values not planes, bridges, etc)
-    bkg_img = np.copy(img)
+    bkg_img = np.copy(col_img)
 
     ## setup an array to hold the segmented image locations
-    segment_locs = np.zeros(img.size).reshape(img.shape)
+    segment_locs = np.zeros(col_img[:,:,0].size).reshape(col_img.shape[0:2])
 
     ## Find all the annotations for the current image
     cur_img_annotation_ids = fn.parse_img_annotation_ids(cur_img_file, parsed_label_info)
@@ -43,15 +52,16 @@ def gen_segmented_features(img,
         ### FIND POINTS IN POLYGON ###
         ##############################
 
+        ## the original
         seg_xys = fn.points_in_polygon(outline_xys)
+
+        ## create a flipped version 
+        seg_xys_flip = (seg_xys[1], seg_xys[0])
 
         ## break the segmented x and ys
         seg_xs = seg_xys[0]
         seg_ys = seg_xys[1]
-
-        ## get the segmentation values from the current image
-        cur_seg_vals = img[seg_ys, seg_xs]
-
+        
         ## update the background image
         bkg_img[seg_ys, seg_xs] = 0
 
@@ -59,7 +69,37 @@ def gen_segmented_features(img,
         ### Extract STATISTICS ### 
         ##########################
 
-        cur_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys)
+        ## loop over each color channel
+        j=0
+        while j < img.shape[2]:
+
+            ## what is the current color channel image
+            cur_img_chan = col_img[:,:,j]
+
+            ## get the segmentation values from the current image
+            cur_seg_vals = cur_img_chan[seg_ys, seg_xs]
+
+            ## calculate the current channel feature statistics
+            cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys_flip, cur_img_chan.shape)
+
+            # set up a prefix to name the columns based on the current channel
+            chan_name = 'chan' + str(j) + '_'
+
+            ## add the channel prefix to the dataframe's column names
+            col_names = [chan_name + f for f in cur_chan_stats.columns]
+
+            ## rename the current channel columns
+            cur_chan_stats.columns = col_names
+
+            ## add this channel's stats to the image stats
+            if j==0:
+                cur_stats = cur_chan_stats
+            elif j>0:
+                cur_stats = pd.concat([cur_stats,cur_chan_stats],axis=1)
+            #
+            j=j+1
+        #
+
 
         ## add the categor id to the last column of the stats dataframe
         cur_stats['category_id'] = outline_id
@@ -90,11 +130,35 @@ def gen_segmented_features(img,
     seg_xys = np.where(bkg_img != 0)
     seg_xs = seg_xys[1]
     seg_ys = seg_xys[0]
-    
-    ## also save the current segementation values
-    cur_seg_vals =  bkg_img[seg_ys, seg_xs]
 
-    cur_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys)
+    ## loop over each color channel
+    j=0
+    while j < bkg_img.shape[2]:
+            
+        ## also save the current segementation values
+        cur_seg_vals =  bkg_img[:,:,j][seg_ys, seg_xs]
+
+        ## calculate the current channel feature statistics
+        cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys, bkg_img.shape[0:2])
+
+        # set up a prefix to name the columns based on the current channel
+        chan_name = 'chan' + str(j) + '_'
+        
+        ## add the channel prefix to the dataframe's column names
+        col_names = [chan_name + f for f in cur_chan_stats.columns]
+        
+        ## rename the current channel columns
+        cur_chan_stats.columns = col_names
+
+        ## add this channel's stats to the image stats
+        if j==0:
+            cur_stats = cur_chan_stats
+        elif j>0:
+            cur_stats = pd.concat([cur_stats,cur_chan_stats],axis=1)
+        #
+        j=j+1
+    #
+
 
     ## add the categor id to the last column of the stats dataframe
     cur_stats['category_id'] = 0 ## Always 0 for background
@@ -117,7 +181,7 @@ def gen_segmented_features(img,
     ## append the current segmentation xy inds to the all list
     all_seg_xys.append(seg_xys)
 
-    img_seg_info = [img.shape, img_seg_stats, tuple(all_seg_xys)]
+    img_seg_info = [img.shape[0:2], img_seg_stats, tuple(all_seg_xys)]
 
     return(img_seg_info)
 
