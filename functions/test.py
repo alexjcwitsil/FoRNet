@@ -243,7 +243,7 @@ def test(project_path, gaus_sigs):
         i=i+1
     #
     ## make a data frame with the ious and include the image name
-        iou_df = pd.DataFrame(all_ious)
+    iou_df = pd.DataFrame(all_ious)
 
     ## add the label names to the dataframe columns
     col_names = [i['name'] for i in label_info['categories']]

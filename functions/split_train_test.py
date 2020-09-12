@@ -34,8 +34,9 @@ def split_train_test(path, test_size=0.2):
     ## If no testing data exists, split the raw imagery
     print('splitting data')
 
-    ## grab all the image files
+    ## grab all the ONLY image files
     all_images = os.listdir(path + '/all_images')
+    all_images = [f for f in all_images if '.' in f]
 
     ## how many total images
     total_images = len(all_images)

@@ -29,6 +29,7 @@ from fornet.functions.test import test
 from fornet.functions.xcorr2d import xcorr2d
 from fornet.functions.gen_inner_features import gen_inner_features
 from fornet.functions.grayscale_img import grayscale_img
+from fornet.functions.sample_distribution import sample_distribution
 
 
 
