@@ -30,12 +30,12 @@ def extract_blob_features(raw_img, blob_img):
         # tuple of length 2, which holds x and y label locations
         cur_blob_xys = np.where(cur_blob)
 
-        ## if the blob is a single pixel, skip it!
-       #  if len(cur_blob_xys[0]) == 1:
-    #         i=i+1
-    #         #continue
-    # #
-    
+        ## if the blob is empty, skip it!
+        if len(cur_blob_xys[0]) == 0:
+            i=i+1
+            continue
+        #
+            
         ## save the current blob xy indices to the list
         blob_xy_inds.append(cur_blob_xys)
 

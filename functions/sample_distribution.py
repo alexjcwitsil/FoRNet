@@ -76,18 +76,38 @@ def sample_distribution(data, n_samps, distribution = 'flat'):
         i=0
         while len(data_dummy) > 0:
 
-            ## find the first sample index
-            cur_samp_ind1 = 0
-            cur_samp_ind2 = int(np.floor(len(data_dummy)/2))
-            cur_samp_ind3 = len(data_dummy)-1 
+            if i == (len(data) - 1):
+                cur_samp_ind1 = int(np.floor(len(data_dummy)/2))
 
-            ## add the current sample to the sampled data list
-            data_reordered[i] = data_dummy[cur_samp_ind1]
-            data_reordered[i+1] = data_dummy[cur_samp_ind2]
-            data_reordered[i+2] = data_dummy[cur_samp_ind3]
+                ## add the current sample to the sampled data list
+                data_reordered[i] = data_dummy[cur_samp_ind1]
+                all_cur_samp_inds = [cur_samp_ind1]
+                #
+            if i == (len(data) - 2):
+                cur_samp_ind1 = 0
+                cur_samp_ind2 = len(data_dummy) - 1
 
-            ## combine the indices
-            all_cur_samp_inds = [cur_samp_ind1, cur_samp_ind2, cur_samp_ind3]
+                ## add the current sample to the sampled data list
+                data_reordered[i] = data_dummy[cur_samp_ind1]
+                data_reordered[i+1] = data_dummy[cur_samp_ind2]
+
+                ## combine the indices
+                all_cur_samp_inds = [cur_samp_ind1, cur_samp_ind2]
+            #
+            if i < (len(data) - 2):
+                cur_samp_ind1 = 0
+                cur_samp_ind2 = int(np.floor(len(data_dummy)/2))
+                cur_samp_ind3 = len(data_dummy)-1
+
+                ## add the current sample to the sampled data list
+                data_reordered[i] = data_dummy[cur_samp_ind1]
+                data_reordered[i+1] = data_dummy[cur_samp_ind2]
+                data_reordered[i+2] = data_dummy[cur_samp_ind3]
+
+                ## combine the indices
+                all_cur_samp_inds=[cur_samp_ind1, cur_samp_ind2,cur_samp_ind3]
+            #
+
             cur_vals = [data_dummy[i] for i in all_cur_samp_inds]
 
             ## remove teh current samples from the dummy list

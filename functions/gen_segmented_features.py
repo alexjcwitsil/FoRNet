@@ -34,6 +34,7 @@ def gen_segmented_features(img,
   
     ## loop over all the annotation indices
     i=0
+    k=0
     while i<len(cur_img_annotation_ids):
 
         ## define the current annotation (label) index
@@ -54,6 +55,13 @@ def gen_segmented_features(img,
 
         ## the original
         seg_xys = fn.points_in_polygon(outline_xys)
+
+        ## if there is no polygon, skip to the next image annotation
+        if len(seg_xys[0]) == 0:
+            i=i+1
+            continue
+        #
+        
 
         ## create a flipped version 
         seg_xys_flip = (seg_xys[1], seg_xys[0])
@@ -105,10 +113,10 @@ def gen_segmented_features(img,
         cur_stats['category_id'] = outline_id
 
         ## save the current feature stats
-        if i == 0:
+        if k == 0:
             ## initilize the image segmentation stats if first iteration
             img_seg_stats = cur_stats
-        elif i > 0:
+        elif k > 0:
             ## append the current stats to the all blob stats dataframe
             cur_stats_list = cur_stats.iloc[0].tolist()
             img_seg_stats.loc[i] = cur_stats_list
@@ -119,6 +127,7 @@ def gen_segmented_features(img,
         print(f' extracting features from labeled segment {str(i)} out of: {str(len(cur_img_annotation_ids))}\r', end="")
      
         i=i+1
+        k=k+1
 
     print()
 
