@@ -6,9 +6,11 @@
 import fornet as fn
 import json
 import pickle
+import numpy as np
+import pandas as pd
 import os 
 
-def train(project_path, gaus_sigs):
+def train(project_path, gaus_sigs, bkg_ignore=False):
 
     ##############
     ### INPUTS ###
@@ -130,6 +132,13 @@ def train(project_path, gaus_sigs):
         ###############
         ### RUN ANN ###
         ###############
+
+        ## if you want to ignore the background, remove assocaited rows
+        if bkg_ignore == True:
+            ## remove those rows from the all_features dataframe
+            all_features = all_features[all_features['category_id'] != 0]
+        #
+        
 
         model_results = fn.train_vanilla_ann(all_features,num_epochs=1000)
 

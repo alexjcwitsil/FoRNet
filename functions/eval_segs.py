@@ -7,7 +7,7 @@ import fornet as fn
 import numpy as np
 
 
-def eval_segs(true_img, pred_img):
+def eval_segs(true_img, pred_img, bkg_ignore=False):
 
     
     ## FORCE IMAGES TO HAVE SAME SHAPE
@@ -17,7 +17,20 @@ def eval_segs(true_img, pred_img):
         true_img = np.delete(true_img,-1,0)
     if(true_img.shape[1] % 2 == 0):
         true_img = np.delete(true_img,-1,1)
+    #
 
+    ## if you want to ignore background
+    if bkg_ignore == True:
+
+        # check if there is any background in the true image
+        if np.any(true_img == 0):
+
+            ## set predicted image to match true background pixels
+            true_bkg_xys = np.where(true_img == 0)
+            pred_img[true_bkg_xys[0], true_bkg_xys[1]] = 0
+        #
+    #
+    
 
     ## what are the unique labels/classes in each image
     unique_pred = np.unique(pred_img)
@@ -26,7 +39,7 @@ def eval_segs(true_img, pred_img):
     ## combined the unique true and predicted labels
     unique_all = np.unique(np.append(unique_true, unique_pred))
 
-    ## setup a an array the ious and label ids for each image
+    ## setup an array the ious and label ids for each image
     ious = np.zeros(len(unique_all))
     ious[:] = np.nan
 

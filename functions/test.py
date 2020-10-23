@@ -9,7 +9,7 @@ import pandas as pd
 from keras.models import load_model
 
 
-def test(project_path, gaus_sigs):
+def test(project_path, gaus_sigs,bkg_ignore=False):
 
      
     #################################
@@ -133,7 +133,15 @@ def test(project_path, gaus_sigs):
             for k in range(len(labels_pred)):
                 pred.append(np.argmax(labels_pred[k]))
                 pred_probs.append(np.max(labels_pred[k]))
+            #
 
+            ## if you ignored backgroudn, you must add 1 to the predictions
+            if bkg_ignore == True:
+                pred = [i+1 for i in pred]
+            #
+            
+
+            
             # build a labeled image and probability image
             labeled_img = np.zeros(img_blob_info[0])
             probability_img = np.zeros(img_blob_info[0])
@@ -224,7 +232,7 @@ def test(project_path, gaus_sigs):
         pred_img = np.load(pred_img_dir + pred_img_files[i])
 
         ## calculate the intersection over union
-        img_ious = fn.eval_segs(true_img, pred_img)
+        img_ious = fn.eval_segs(true_img, pred_img,bkg_ignore)
 
         ## set up an array of ious if first iteration
         ##if i == 0:
