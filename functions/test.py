@@ -196,7 +196,7 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
 
         print('')
-        print(f' Testing and evaluating file {str(i)} ({img_files[i]}) out of {str(len(img_files))}\r', end="")
+        #print(f' Testing and evaluating file {str(i)} ({img_files[i]}) out of {str(len(img_files))}\r', end="")
         i=i+1
     print()
 

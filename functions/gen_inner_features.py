@@ -108,7 +108,7 @@ def gen_inner_features(blob_info, true_img):
      
             j=j+1
 
-        print(f' generating inner features from label {str(i)} out of {str(len(unique_labs))}  \r', end="")
+        #print(f' generating inner features from label {str(i)} out of {str(len(unique_labs))}  \r', end="")
         i=i+1
     #
     print()
