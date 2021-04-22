@@ -16,7 +16,7 @@ from keras.layers import Dense
 #from sklearn.metrics import accuracy_score
 
 
-def train_vanilla_ann(labeled_features,num_epochs=5):
+def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=[]):
 
     
     ###############################
@@ -38,12 +38,55 @@ def train_vanilla_ann(labeled_features,num_epochs=5):
     sc = StandardScaler()
     features = sc.fit_transform(features_unnorm)
 
-    # one hot encode the raw labels
-    ohe = OneHotEncoder()
-    labels = ohe.fit_transform(labels_raw).toarray()
+
+    ########################
+    ### ONE HOT ENCODING ###
+    ########################
+
+    ## this is super annoying and...
+    ## very specific to FORNET!
+    
+    ## if number of classes is unknown
+    if not num_classes:
+        # one hot encode the raw labels
+        ohe = OneHotEncoder()
+        labels = ohe.fit_transform(labels_raw).toarray()
+    #
+
+    ## if number of classes is known
+    if num_classes:
+
+        ## check if the background is being ignored
+        bkg_ignore = False
+        if np.min(labels_raw) > 0:
+            bkg_ignore = True
+        #
+
+        ## adjust number of classes if ignoring background
+        if bkg_ignore == True:
+            num_classes = num_classes - 1
+        #
+        
+        ## initilize an array to hold the labels
+        labels = np.zeros(len(labels_raw)*num_classes).reshape(len(labels_raw),num_classes)
+
+        i=0
+        while i < len(labels):
+
+            cur_lab = int(labels_raw[i])
+
+            ## adjust the current label if ignoring background
+            if bkg_ignore == True:
+                cur_lab = cur_lab - 1
+            #
+
+            labels[i,cur_lab] = 1
+            i=i+1
+        #
+    #
 
     ## split the data into a training and test set
-    features_train, features_test,labels_train,labels_test = train_test_split(features,labels,test_size = 0.1)
+    features_train, features_test,labels_train,labels_test = train_test_split(features,labels,test_size = 0.20)
 
     ##################
     ## BUILD THE NN ##

@@ -124,7 +124,7 @@ def gen_segmented_features(img,
         ## append the current segmentation xy inds to the all list
         all_seg_xys.append(seg_xys)
 
-        #print(f' extracting features from labeled segment {str(i)} out of: {str(len(cur_img_annotation_ids))}\r', end="")
+        print(f' extracting features from labeled segment {str(i)} out of: {str(len(cur_img_annotation_ids))}\r', end="")
      
         i=i+1
         k=k+1

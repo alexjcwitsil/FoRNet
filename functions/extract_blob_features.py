@@ -83,7 +83,7 @@ def extract_blob_features(raw_img, blob_img):
             all_blob_stats.loc[i] = cur_stats_list
 
         
-        ##print(f' Extracting features from blob {str(i)} out of {str(blob_total)}\r', end="")
+        print(f' Extracting features from blob {str(i)} out of {str(blob_total)}\r', end="")
         i = i+1
     print()
 

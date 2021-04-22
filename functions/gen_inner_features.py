@@ -51,6 +51,9 @@ def gen_inner_features(blob_info, true_img):
         true_img_bin = np.zeros(true_img.size).reshape(true_img.shape)
         true_img_bin[np.where(true_img == cur_lab)] = 1
 
+        ## create an object to keep track of the number of inner features
+        n_inner_features = 0
+
         ## loop over all blobs
         j=0
         while j < len(all_blob_xys):
@@ -74,9 +77,6 @@ def gen_inner_features(blob_info, true_img):
             ## put these two check together
             inner_blob_check = any_overlap & blob_fully_in_segment
 
-            ##DME
-            ##plt.imshow(overlap_img)
-
             ## define boolean object stating if there is overlap
             ##overlap_bool = (overlap_img < 2).any()
 
@@ -89,6 +89,7 @@ def gen_inner_features(blob_info, true_img):
 
             #print('moving onto ' + str(j))
             #j=j+1
+            n_inner_features = n_inner_features + 1 
 
             ## if the blob is completetly within the current segment, grab the blob statistics
             cur_blob_stats = all_blob_stats.iloc[j]
@@ -108,7 +109,7 @@ def gen_inner_features(blob_info, true_img):
      
             j=j+1
 
-        #print(f' generating inner features from label {str(i)} out of {str(len(unique_labs))}  \r', end="")
+        print(f' generated {str(n_inner_features)} inner features from label {str(cur_lab)} out of {str(len(unique_labs))}  \r', end="")
         i=i+1
     #
     print()

@@ -80,7 +80,7 @@ def gen_background_features(blob_info, true_img):
         ##print(str(i) + ' ' + str(len(seg_xs)))
 
         #print('file: '+str(i)+' blob ' + str(j) + ' out of: ' +  str(len(all_blob_stats)))
-        #print(f' generating background features from blob {str(j)} out of {str(len(all_blob_stats))}  \r', end="")
+        print(f' generating background features from blob {str(j)} out of {str(len(all_blob_stats))}  \r', end="")
         j=j+1
     print()
 

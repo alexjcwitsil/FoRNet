@@ -114,8 +114,9 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
             blob_features_unnorm = blob_features_unnorm[~np.isnan(blob_features_unnorm).any(axis=1)]
 
             # scale the features
-            cur_features = sc.fit_transform(blob_features_unnorm)
-
+            ##cur_features = sc.fit_transform(blob_features_unnorm)
+            cur_features = sc.transform(blob_features_unnorm)
+            
 
             ########################
             ### MAKE PREDICTIONS ###
@@ -167,10 +168,10 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
 
             ## DME ##
-            # plt.subplot(1,2,1)
-            # plt.imshow(true_img_seg)
-            # plt.subplot(1,2,2)
-            # plt.imshow(labeled_img)
+            plt.subplot(1,2,1)
+            plt.imshow(true_img_seg)
+            plt.subplot(1,2,2)
+            plt.imshow(labeled_img)
 
             j=j+1
 
@@ -196,7 +197,7 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
 
         print('')
-        #print(f' Testing and evaluating file {str(i)} ({img_files[i]}) out of {str(len(img_files))}\r', end="")
+        print(f' Testing and evaluating file {str(i)} ({img_files[i]}) out of {str(len(img_files))}\r', end="")
         i=i+1
     print()
 

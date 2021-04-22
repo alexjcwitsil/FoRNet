@@ -11,6 +11,8 @@ from scipy.stats import kurtosis, skew
 from scipy.stats import norm
 import cv2
 
+from skimage import transform
+
 def calc_feature_stats(vals, xy_inds, img_shape):
 
     ## CURRENT STATS TO BE CALCULATED...
@@ -49,7 +51,11 @@ def calc_feature_stats(vals, xy_inds, img_shape):
     ## FREQUENCY DOMAIN ##
     ######################
 
-    # SEG_IMG_UNNORM = np.abs(np.fft.fft2(seg_img))
+    # ## resize the segmented image for faster "ffting"
+    # seg_img_resize = transform.resize(seg_img, (256,256))
+
+    # ##SEG_IMG_UNNORM = np.abs(np.fft.fft2(seg_img))
+    # SEG_IMG_UNNORM = np.abs(np.fft.fft2(seg_img_resize))
 
     # # ## find the sum of the SEGMETNED IMAGE
     # SEG_IMG_sum = np.sum(SEG_IMG_UNNORM)

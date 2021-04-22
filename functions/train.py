@@ -17,7 +17,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False):
     ##############
 
     ## setup/check the testing and training data dirs
-    fn.split_train_test(project_path + '/data/', test_size=0.2)
+    fn.split_train_test(project_path + '/data/', test_size=0.0)
 
     # what is the raw image directory
     raw_img_path = project_path + '/data/training/raw_images/'
@@ -138,9 +138,16 @@ def train(project_path, gaus_sigs, bkg_ignore=False):
             ## remove those rows from the all_features dataframe
             all_features = all_features[all_features['category_id'] != 0]
         #
-        
 
-        model_results = fn.train_vanilla_ann(all_features,num_epochs=1000)
+        ## determine the number of classes
+        num_classes = int(len(label_info['categories'])) + 1 # for background
+
+        ## adjust if keeping background
+        ## if bkg_ignore == False: num_classes = num_classes + 1
+
+
+        ## train the model
+        model_results = fn.train_vanilla_ann(all_features,num_epochs=500, num_classes=num_classes)
 
         model = model_results[0]
         scaling_factors = model_results[1]
