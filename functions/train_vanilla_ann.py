@@ -16,7 +16,7 @@ from keras.layers import Dense
 #from sklearn.metrics import accuracy_score
 
 
-def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=[]):
+def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=None):
 
     
     ###############################
@@ -47,14 +47,14 @@ def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=[]):
     ## very specific to FORNET!
     
     ## if number of classes is unknown
-    if not num_classes:
+    if num_classes == None:
         # one hot encode the raw labels
         ohe = OneHotEncoder()
         labels = ohe.fit_transform(labels_raw).toarray()
     #
 
     ## if number of classes is known
-    if num_classes:
+    if num_classes != None:
 
         ## check if the background is being ignored
         bkg_ignore = False

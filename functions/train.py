@@ -142,9 +142,8 @@ def train(project_path, gaus_sigs, bkg_ignore=False):
         ## determine the number of classes
         num_classes = int(len(label_info['categories'])) + 1 # for background
 
-        ## adjust if keeping background
-        ## if bkg_ignore == False: num_classes = num_classes + 1
-
+        ## adjust if ignoring background
+        ##if bkg_ignore == True: num_classes = num_classes - 1
 
         ## train the model
         model_results = fn.train_vanilla_ann(all_features,num_epochs=500, num_classes=num_classes)

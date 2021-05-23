@@ -149,7 +149,7 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
 
             # loop over the blob indices
-            k=1
+            k=0#1
             while k < len(pred):
 
                 # isolate the current blob indices
@@ -165,13 +165,6 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
             ## add current labeled image to the list
             labeled_img_list.append(labeled_img)
             probability_img_list.append(probability_img)
-
-
-            ## DME ##
-            plt.subplot(1,2,1)
-            plt.imshow(true_img_seg)
-            plt.subplot(1,2,2)
-            plt.imshow(labeled_img)
 
             j=j+1
 
