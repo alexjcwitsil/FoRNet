@@ -83,88 +83,100 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
             ## what is the current Gaussian sigmas
             cur_sig = gaus_sigs[j]
 
+            ## how many channels in the current image
+            num_chans = img.shape[2]
 
-            #################
-            ## READ IN ANN ##
-            #################
+            ## loop over the image channels
+            jj=0
+            while jj < num_chans:
 
-            ## Where is the model and scaling factors 
-            model_dir = project_path + '/results/nn_models/sig' + str(cur_sig) + '/'
-            model_file = 'vanilla_model.h5'
-            scaling_factors_file = 'scaling_factors.pickle'
-
-            ## load the model 
-            model = load_model(model_dir + model_file)
-
-            ## load the scaline factors
-            with open(model_dir + scaling_factors_file,'r+b') as handle:
-                sc = pickle.load(handle)
-
-
-            ############################
-            ## GENERATE BLOB FEATURES ##
-            ############################
-
-            img_blob_info = fn.gen_blob_features(img, cur_sig)
-
-            ## separate the blob features
-            blob_features_unnorm = img_blob_info[1]
-
-            ## remove any nan values
-            blob_features_unnorm = blob_features_unnorm[~np.isnan(blob_features_unnorm).any(axis=1)]
-
-            # scale the features
-            ##cur_features = sc.fit_transform(blob_features_unnorm)
-            cur_features = sc.transform(blob_features_unnorm)
+                ## current channel
+                cur_chan = jj
             
+                #################
+                ## READ IN ANN ##
+                #################
 
-            ########################
-            ### MAKE PREDICTIONS ###
-            ########################
+                ## Where is the model and scaling factors 
+                model_dir = project_path + '/results/nn_models/sig' + str(cur_sig) + '/'
+                model_file = 'chan' + str(cur_chan) +'_vanilla_model.h5'
+                scaling_factors_file = 'chan' + str(cur_chan)+'_scaling_factors.pickle'
 
-            ## make predictions using the model
-            labels_pred = model.predict(cur_features)
+                ## load the model 
+                model = load_model(model_dir + model_file)
 
-            #Converting predictions to label (opposite of OHE)
-            pred = list()
+                ## load the scaline factors
+                with open(model_dir + scaling_factors_file,'r+b') as handle:
+                    sc = pickle.load(handle)
 
-            # also create a list of prediction probabilities
-            pred_probs = list()
 
-            for k in range(len(labels_pred)):
-                pred.append(np.argmax(labels_pred[k]))
-                pred_probs.append(np.max(labels_pred[k]))
+                ############################
+                ## GENERATE BLOB FEATURES ##
+                ############################
+
+                img_blob_info=fn.gen_blob_features(img,cur_sig,cur_chan)
+
+                ## separate the blob features
+                blob_features_unnorm = img_blob_info[1]
+
+                ## remove any nan values
+                blob_features_unnorm = blob_features_unnorm[~np.isnan(blob_features_unnorm).any(axis=1)]
+
+                # scale the features
+                ##cur_features = sc.fit_transform(blob_features_unnorm)
+                cur_features = sc.transform(blob_features_unnorm)
+
+
+                ########################
+                ### MAKE PREDICTIONS ###
+                ########################
+
+                ## make predictions using the model
+                labels_pred = model.predict(cur_features)
+
+                #Converting predictions to label (opposite of OHE)
+                pred = list()
+
+                # also create a list of prediction probabilities
+                pred_probs = list()
+
+                for k in range(len(labels_pred)):
+                    pred.append(np.argmax(labels_pred[k]))
+                    pred_probs.append(np.max(labels_pred[k]))
+                #
+
+                ## if you ignored backgroudn, you must add 1 to the predictions
+                if bkg_ignore == True:
+                    pred = [i+1 for i in pred]
+                #
+
+
+
+                # build a labeled image and probability image
+                labeled_img = np.zeros(img_blob_info[0])
+                probability_img = np.zeros(img_blob_info[0])
+
+
+                # loop over the blob indices
+                k=0#1
+                while k < len(pred):
+
+                    # isolate the current blob indices
+                    blob_xs = img_blob_info[2][k][0]
+                    blob_ys = img_blob_info[2][k][1]
+
+                    # populate these indices with the current label
+                    labeled_img[blob_xs,blob_ys] = pred[k]
+                    probability_img[blob_xs,blob_ys] = pred_probs[k]
+
+                    k=k+1
+
+                ## add current labeled image to the list
+                labeled_img_list.append(labeled_img)
+                probability_img_list.append(probability_img)
+
+                jj=jj+1
             #
-
-            ## if you ignored backgroudn, you must add 1 to the predictions
-            if bkg_ignore == True:
-                pred = [i+1 for i in pred]
-            #
-            
-
-            
-            # build a labeled image and probability image
-            labeled_img = np.zeros(img_blob_info[0])
-            probability_img = np.zeros(img_blob_info[0])
-
-
-            # loop over the blob indices
-            k=0#1
-            while k < len(pred):
-
-                # isolate the current blob indices
-                blob_xs = img_blob_info[2][k][0]
-                blob_ys = img_blob_info[2][k][1]
-
-                # populate these indices with the current label
-                labeled_img[blob_xs,blob_ys] = pred[k]
-                probability_img[blob_xs,blob_ys] = pred_probs[k]
-
-                k=k+1
-
-            ## add current labeled image to the list
-            labeled_img_list.append(labeled_img)
-            probability_img_list.append(probability_img)
 
             j=j+1
 
@@ -209,7 +221,7 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
 
     ## how many label categories are there
-    num_cats = len(label_info['categories']) + 1 # add one for background!
+    num_cats = len(label_info['categories']) + 1 #add one for background!
 
     ## how many test images are there
     num_imgs = len(true_img_files)

@@ -9,7 +9,7 @@
 import fornet as fn
 from skimage.color import rgb2hsv
 
-def gen_blob_features(img, gaus_sig):
+def gen_blob_features(img, gaus_sig, chan):
 
     #######################
     # Image Preprocessing #
@@ -17,7 +17,7 @@ def gen_blob_features(img, gaus_sig):
 
     ## create a grayscaled version of the image
     ##gray_img = fn.grayscale_img(img)
-    gray_img = rgb2hsv(img)[:,:,0]
+    gray_img = rgb2hsv(img)[:,:,chan]
 
 
     ##################
