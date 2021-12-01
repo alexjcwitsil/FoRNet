@@ -16,7 +16,7 @@ def parse_label_outline(train_info, index):
     ## 'category_name', 'iscrowd', 'area', 'bbox'
 
     ## go ahead and save the current annotations category id and name
-    ##cur_annotation_category = cur_annotation['categor_name']
+    cur_annotation_category = cur_annotation['category_name']
     cur_annotation_category_id = cur_annotation['category_id']
 
     ## isolate the OUTLINE for the current segmentation

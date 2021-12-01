@@ -87,6 +87,7 @@ def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=None):
 
     ## split the data into a training and test set
     features_train, features_test,labels_train,labels_test = train_test_split(features,labels,test_size = 0.20)
+    ##features_train, features_test,labels_train,labels_test = train_test_split(features,labels,test_size = 0.00001)
 
     ##################
     ## BUILD THE NN ##

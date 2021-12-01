@@ -18,8 +18,14 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
     ## read in the training information 
     with open(project_path + '/data/label_info.json') as f:
-        label_info = json.load(f)
+    ##with open(project_path + '/data/result.json') as f:
+        label_info_raw = json.load(f)
         ## keys -> 'images', 'categories', 'annotations'
+    #
+    
+    ## amend label info such that labeled category IDs start with 1
+    ## and not 0, which is resereved for background
+    label_info = fn.add_bkg2label_info(label_info_raw)
 
 
     ###########################
@@ -53,6 +59,24 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
 
         ## load in the current image
         img = fn.load_image(img_path, gray=False, odd_dims=True)
+
+
+
+
+
+
+
+
+        ## transfrom the image to HSV space
+        ##from skimage.color import rgb2hsv
+        ##img = rgb2hsv(img)
+
+
+
+
+
+
+
 
 
         #################################
@@ -123,8 +147,8 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
                 blob_features_unnorm = blob_features_unnorm[~np.isnan(blob_features_unnorm).any(axis=1)]
 
                 # scale the features
-                ##cur_features = sc.fit_transform(blob_features_unnorm)
-                cur_features = sc.transform(blob_features_unnorm)
+                cur_features = sc.fit_transform(blob_features_unnorm)
+                ##cur_features = sc.transform(blob_features_unnorm)
 
 
                 ########################

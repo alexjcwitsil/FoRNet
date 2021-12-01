@@ -19,7 +19,7 @@ def extract_blob_features(raw_img, blob_img):
     ## define a list to hold all the blob x and y indices
     blob_xy_inds = list()
 
-    # loop over each label
+    # loop over each blob
     i = 1 # NOTE WE START AT 1 HERE! 
     while i <= blob_total:
 
@@ -32,6 +32,7 @@ def extract_blob_features(raw_img, blob_img):
 
         ## if the blob is empty, skip it!
         if len(cur_blob_xys[0]) == 0:
+        ##if len(cur_blob_xys[0]) <= 1:
             i=i+1
             continue
         #
@@ -49,8 +50,19 @@ def extract_blob_features(raw_img, blob_img):
             # isolate the current blob color values
             cur_blob_vals = cur_img_chan[cur_blob_xys]
 
+
+
+
+
             ## calculate the feature statistics
-            cur_chan_stats = fn.calc_feature_stats(cur_blob_vals, cur_blob_xys,cur_img_chan.shape)
+            cur_chan_stats = fn.calc_feature_stats(cur_blob_vals, cur_blob_xys, cur_img_chan.shape)
+            ##cur_chan_stats = calc_feature_stats(cur_blob_vals, cur_blob_xys, cur_img_chan.shape)
+
+
+
+
+
+      
             ## set up a prefix to name the columns based on the current channel
             chan_name = 'chan' + str(j) + '_'
 

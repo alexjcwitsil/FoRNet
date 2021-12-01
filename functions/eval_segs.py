@@ -78,6 +78,7 @@ def eval_segs(true_img, pred_img, bkg_ignore=False):
 
         ## first add the true and pred binary images together
         stacked_img = pred_bin + true_bin
+        stacked_img = stacked_img.astype(int)
 
         ## calculate area of overlap
         area_of_overlap = len(np.where(true_bin + pred_bin == 2)[0])

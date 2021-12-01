@@ -54,18 +54,13 @@ def gen_segmented_features(img,
         ##############################
 
         ## the original
-        seg_xys = list(fn.points_in_polygon(outline_xys))
+        seg_xys = fn.points_in_polygon(outline_xys)
 
         ## if there is no polygon, skip to the next image annotation
         if len(seg_xys[0]) == 0:
-
             i=i+1
             continue
         #
-
-        ## convert the seg_xys to ints to eventually index over
-        seg_xys[0] = seg_xys[0].astype(int)
-        seg_xys[1] = seg_xys[1].astype(int)
         
 
         ## create a flipped version 
@@ -148,7 +143,7 @@ def gen_segmented_features(img,
     ## loop over each color channel
     j=0
     while j < bkg_img.shape[2]:
-  
+            
         ## also save the current segementation values
         cur_seg_vals =  bkg_img[:,:,j][seg_ys, seg_xs]
 

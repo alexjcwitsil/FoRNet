@@ -94,6 +94,7 @@ def gen_inner_features(blob_info, true_img):
             ## if the blob is completetly within the current segment, grab the blob statistics
             cur_blob_stats = all_blob_stats.iloc[j]
 
+            
             ######################################
             ### APPEND STATISTICS TO DATAFRAME ###
             ######################################

@@ -29,8 +29,11 @@ def points_in_polygon(xy_array):
     outline_top = np.max(outline_ys)
 
     ## bounding x and y dimensions
-    bounding_xdim = outline_right - outline_left
-    bounding_ydim = outline_top - outline_bottom
+    ## go ahead and convert to ints
+    ##bounding_xdim = outline_right - outline_left
+    ##bounding_ydim = outline_top - outline_bottom
+    bounding_xdim = int(outline_right - outline_left)
+    bounding_ydim = int(outline_top - outline_bottom)
 
     ## create an 0xN array that spans the bounding x and y dimensions
     bounding_xs = np.arange(bounding_xdim)
@@ -50,6 +53,7 @@ def points_in_polygon(xy_array):
     points_in_poly_vec = seg_polygon.contains_points(bounding_xys)
 
     ## convert this vector to a mesh (Bool)
+    ##points_in_poly_mesh = points_in_poly_vec.reshape(int(bounding_ydim),int(bounding_xdim)).transpose()
     points_in_poly_mesh = points_in_poly_vec.reshape(bounding_ydim,bounding_xdim).transpose()
 
     ## find the xys indices that are within the bounding box region

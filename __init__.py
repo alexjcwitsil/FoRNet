@@ -30,15 +30,9 @@ from fornet.functions.xcorr2d import xcorr2d
 from fornet.functions.gen_inner_features import gen_inner_features
 from fornet.functions.grayscale_img import grayscale_img
 from fornet.functions.sample_distribution import sample_distribution
-
-
-
-
-
-
-
-
-
+from fornet.functions.add_bkg2label_info import add_bkg2label_info
+from fornet.functions.gen_for import gen_for
+from fornet.functions.setup_kfold_dirs import setup_kfold_dirs
 
 
 
