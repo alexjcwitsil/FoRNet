@@ -33,6 +33,8 @@ from fornet.functions.sample_distribution import sample_distribution
 from fornet.functions.add_bkg2label_info import add_bkg2label_info
 from fornet.functions.gen_for import gen_for
 from fornet.functions.setup_kfold_dirs import setup_kfold_dirs
+from fornet.functions.norm_chans import norm_chans
+from fornet.functions.range01 import range01
 
 
 
