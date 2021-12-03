@@ -55,29 +55,29 @@ def calc_feature_stats(vals, xy_inds, img_shape):
     ### TEXTURE ###
     ###############
     
-    ## crop the segmented image
-    crop_seg = seg_img[np.min(x_inds):np.max(x_inds)+1, np.min(y_inds):np.max(y_inds)+1]
+    # ## crop the segmented image
+    # crop_seg = seg_img[np.min(x_inds):np.max(x_inds)+1, np.min(y_inds):np.max(y_inds)+1]
 
-    from skimage.feature import greycomatrix, greycoprops
+    # from skimage.feature import greycomatrix, greycoprops
 
-    ## generate the GCLM matrix
-    gclm_all = greycomatrix(crop_seg.astype(int), [1], [0], levels=256,symmetric=True, normed=False)
+    # ## generate the GCLM matrix
+    # gclm_all = greycomatrix(crop_seg.astype(int), [1], [0], levels=256,symmetric=True, normed=False)
 
-    ## remove the zero row and column
-    gclm_dme = np.delete(gclm_all, 0, axis=0)
-    gclm_unnorm = np.delete(gclm_dme, 0, axis=1)
+    # ## remove the zero row and column
+    # gclm_dme = np.delete(gclm_all, 0, axis=0)
+    # gclm_unnorm = np.delete(gclm_dme, 0, axis=1)
 
-    ## normalize
-    ##gclm = (gclm_unnorm - np.min(gclm_unnorm)) / (np.max(gclm_unnorm) - np.min(gclm_unnorm))
-    gclm = gclm_unnorm / np.sum(gclm_unnorm)
+    # ## normalize
+    # ##gclm = (gclm_unnorm - np.min(gclm_unnorm)) / (np.max(gclm_unnorm) - np.min(gclm_unnorm))
+    # gclm = gclm_unnorm / np.sum(gclm_unnorm)
 
-    ## calculate texture features
-    texture_contrast = greycoprops(gclm, 'contrast')[0][0]
-    texture_dissimilarity = greycoprops(gclm, 'dissimilarity')[0][0]
-    texture_homogeneity = greycoprops(gclm, 'homogeneity')[0][0]
-    texture_asm = greycoprops(gclm, 'ASM')[0][0]
-    texture_energy = greycoprops(gclm, 'energy')[0][0]
-    texture_correlation = greycoprops(gclm, 'correlation')[0][0]
+    # ## calculate texture features
+    # texture_contrast = greycoprops(gclm, 'contrast')[0][0]
+    # texture_dissimilarity = greycoprops(gclm, 'dissimilarity')[0][0]
+    # texture_homogeneity = greycoprops(gclm, 'homogeneity')[0][0]
+    # texture_asm = greycoprops(gclm, 'ASM')[0][0]
+    # texture_energy = greycoprops(gclm, 'energy')[0][0]
+    # texture_correlation = greycoprops(gclm, 'correlation')[0][0]
 
 
     # ######################
