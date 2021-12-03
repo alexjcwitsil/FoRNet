@@ -74,7 +74,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
         ####################################
 
         ## read in a dummy image to see how many channels there are
-        dme_img = fn.load_image(raw_img_path + img_files[0], gray=False)
+        dme_img = fn.load_image(raw_img_path + img_files[0], gray=False, norma_chans=True)
 
         ## how many channels are there
         num_chans = dme_img.shape[2]
@@ -101,7 +101,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
                     img_path = raw_img_path + cur_img_file
 
                     ## load in the current image
-                    img = fn.load_image(img_path, gray=False, odd_dims=True)
+                    img = fn.load_image(img_path, gray=False, odd_dims=True, norm_chans=True)
 
 
 

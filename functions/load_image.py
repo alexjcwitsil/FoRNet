@@ -22,11 +22,6 @@ def load_image(path, gray=True, odd_dims=False, norm_chans=False):
     # read in raw image
     img_raw = cv2.imread(path, img_type)
 
-    ## do you want to normalize each channel by subtracting the mean and dividing by STD
-    if norm_chans==True:
-        img_raw = fn.norm_chans(img_raw)
-    #
-
     ## do you want to force odd dimensions?
     if odd_dims==True:
 
@@ -39,6 +34,13 @@ def load_image(path, gray=True, odd_dims=False, norm_chans=False):
 
     # convert the image from int (I think) to a float
     img = np.float64(img_raw)
+
+    
+    ## do you want to normalize each channel by subtracting the mean and dividing by STD
+    if norm_chans==True:
+        img = fn.norm_chans(img)
+    #
+
 
     return(img)
 
