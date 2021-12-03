@@ -58,25 +58,7 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
         img_path = test_img_path + cur_img_file
 
         ## load in the current image
-        img = fn.load_image(img_path, gray=False, odd_dims=True)
-
-
-
-
-
-
-
-
-        ## transfrom the image to HSV space
-        ##from skimage.color import rgb2hsv
-        ##img = rgb2hsv(img)
-
-
-
-
-
-
-
+        img = fn.load_image(img_path, gray=False, odd_dims=True, norm_chans=True)
 
 
         #################################
@@ -147,8 +129,8 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
                 blob_features_unnorm = blob_features_unnorm[~np.isnan(blob_features_unnorm).any(axis=1)]
 
                 # scale the features
-                cur_features = sc.fit_transform(blob_features_unnorm)
-                ##cur_features = sc.transform(blob_features_unnorm)
+                ##cur_features = sc.fit_transform(blob_features_unnorm)
+                cur_features = sc.transform(blob_features_unnorm)
 
 
                 ########################
