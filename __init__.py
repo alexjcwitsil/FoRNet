@@ -35,6 +35,7 @@ from fornet.functions.gen_for import gen_for
 from fornet.functions.setup_kfold_dirs import setup_kfold_dirs
 from fornet.functions.norm_chans import norm_chans
 from fornet.functions.range01 import range01
+from fornet.functions.img_range01 import img_range01
 
 
 
