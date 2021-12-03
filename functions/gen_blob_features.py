@@ -20,12 +20,8 @@ def gen_blob_features(img, gaus_sig, chan):
     ##gray_img = img[:,:,chan]
  
     ## transfrom the image to HSV space
-    # from skimage.color import rgb2hsv
     hsv_img = rgb2hsv(img)
     gray_img = hsv_img[:,:,chan]
-
-    ##img = rgb2hsv(img)
-    ##gray_img = img[:,:,chan]
 
 
     ##################
