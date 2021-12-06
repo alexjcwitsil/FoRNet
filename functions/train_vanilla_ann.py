@@ -34,8 +34,16 @@ def train_vanilla_ann(labeled_features,num_epochs=5, num_classes=None):
     ## reshape labels from a column 'vector' to row 'vector'
     labels_raw = np.array(labels_raw).reshape(len(labels_raw),1)
 
+
+
     ## Normalize the data (mean=0 and std=1)
-    sc = StandardScaler()
+    ##sc = StandardScaler()
+    from sklearn.preprocessing import RobustScaler
+    sc = RobustScaler()
+
+
+
+
     features = sc.fit_transform(features_unnorm)
 
 
