@@ -169,7 +169,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
 
                 ## train the model
                 ##model_results = fn.train_vanilla_ann(all_features,num_epochs=500, num_classes=num_classes)
-                model_results = fn.train_vanilla_ann(all_features,num_epochs=50, num_classes=num_classes)
+                model_results = fn.train_vanilla_ann(all_features,num_epochs=500, num_classes=num_classes)
 
                 model = model_results[0]
                 scaling_factors = model_results[1]
