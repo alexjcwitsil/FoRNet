@@ -74,7 +74,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
         ####################################
 
         ## read in a dummy image to see how many channels there are
-        dme_img = fn.load_image(raw_img_path + img_files[0], gray=False, norma_chans=True)
+        dme_img = fn.load_image(raw_img_path + img_files[0], gray=False, norm_chans=True)
 
         ## how many channels are there
         num_chans = dme_img.shape[2]
@@ -169,7 +169,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
 
                 ## train the model
                 ##model_results = fn.train_vanilla_ann(all_features,num_epochs=500, num_classes=num_classes)
-                model_results = fn.train_vanilla_ann(all_features,num_epochs=100, num_classes=num_classes)
+                model_results = fn.train_vanilla_ann(all_features,num_epochs=50, num_classes=num_classes)
 
                 model = model_results[0]
                 scaling_factors = model_results[1]
