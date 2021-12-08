@@ -31,8 +31,8 @@ def extract_blob_features(raw_img, blob_img):
         cur_blob_xys = np.where(cur_blob)
 
         ## if the blob is empty, skip it!
-        if len(cur_blob_xys[0]) == 0:
-        ##if len(cur_blob_xys[0]) <= 1:
+        ##if len(cur_blob_xys[0]) == 0:
+        if len(cur_blob_xys[0]) <= 1:
             i=i+1
             continue
         #
