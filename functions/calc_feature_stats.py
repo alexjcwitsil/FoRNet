@@ -20,8 +20,9 @@ def calc_feature_stats(vals, xy_inds, img_shape):
     ##stat_names = ["sum", "mean", "sd", "skew", "kurt", "area","median", "25_perc", "50_perc", "75_perc"]
     ## stat_names = ["sum", "mean", "sd", "skew", "kurt","median", "25_perc", "50_perc", "75_perc", "max_freq_dist"]
 
+    stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_dissimilarity"]
     ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_contrast", "texture_dissimilarity", "texture_homogeneity", "texture_asm", "texture_energy", "texture_correlation"]
-    stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc"]
+    ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc"]
 
 
     ## break the x,y points into individual arrays
@@ -55,29 +56,37 @@ def calc_feature_stats(vals, xy_inds, img_shape):
     ### TEXTURE ###
     ###############
     
-    # ## crop the segmented image
-    # crop_seg = seg_img[np.min(x_inds):np.max(x_inds)+1, np.min(y_inds):np.max(y_inds)+1]
+    ## crop the segmented image
+    crop_seg = seg_img[np.min(x_inds):np.max(x_inds)+1, np.min(y_inds):np.max(y_inds)+1]
 
-    # from skimage.feature import greycomatrix, greycoprops
+    from skimage.feature import greycomatrix, greycoprops
 
-    # ## generate the GCLM matrix
-    # gclm_all = greycomatrix(crop_seg.astype(int), [1], [0], levels=256,symmetric=True, normed=False)
+    ## generate the GCLM matrix
+    gclm_all = greycomatrix(crop_seg.astype(int), [1], [0], levels=256,symmetric=True, normed=False)
 
-    # ## remove the zero row and column
-    # gclm_dme = np.delete(gclm_all, 0, axis=0)
-    # gclm_unnorm = np.delete(gclm_dme, 0, axis=1)
+    ## remove the zero row and column
+    gclm_dme = np.delete(gclm_all, 0, axis=0)
+    gclm_unnorm = np.delete(gclm_dme, 0, axis=1)
 
-    # ## normalize
-    # ##gclm = (gclm_unnorm - np.min(gclm_unnorm)) / (np.max(gclm_unnorm) - np.min(gclm_unnorm))
-    # gclm = gclm_unnorm / np.sum(gclm_unnorm)
+    ## normalize
+    ##gclm = (gclm_unnorm - np.min(gclm_unnorm)) / (np.max(gclm_unnorm) - np.min(gclm_unnorm))
+    gclm = gclm_unnorm / np.sum(gclm_unnorm)
 
-    # ## calculate texture features
-    # texture_contrast = greycoprops(gclm, 'contrast')[0][0]
-    # texture_dissimilarity = greycoprops(gclm, 'dissimilarity')[0][0]
-    # texture_homogeneity = greycoprops(gclm, 'homogeneity')[0][0]
-    # texture_asm = greycoprops(gclm, 'ASM')[0][0]
-    # texture_energy = greycoprops(gclm, 'energy')[0][0]
-    # texture_correlation = greycoprops(gclm, 'correlation')[0][0]
+    ## calculate texture features
+    texture_contrast = greycoprops(gclm, 'contrast')[0][0]
+    texture_dissimilarity = greycoprops(gclm, 'dissimilarity')[0][0]
+    texture_homogeneity = greycoprops(gclm, 'homogeneity')[0][0]
+    texture_asm = greycoprops(gclm, 'ASM')[0][0]
+    texture_energy = greycoprops(gclm, 'energy')[0][0]
+    texture_correlation = greycoprops(gclm, 'correlation')[0][0]
+
+    # import random
+    # texture_contrast = random.randint(0,255)
+    # texture_dissimilarity = random.randint(0,255)
+    # texture_homogeneity = random.randint(0,255)
+    # texture_asm = random.randint(0,255)
+    # texture_energy = random.randint(0,255)
+    # texture_correlation = random.randint(0,255)
 
 
     # ######################
@@ -144,8 +153,9 @@ def calc_feature_stats(vals, xy_inds, img_shape):
 
 
     
+    stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_dissimilarity]
     ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_contrast, texture_dissimilarity, texture_homogeneity, texture_asm, texture_energy, texture_correlation]
-    stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc]
+    ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc]
 
 
 
