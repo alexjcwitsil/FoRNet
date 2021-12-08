@@ -12,7 +12,7 @@ def gen_segmented_features(img,
 
 
     ## normalize image between 0 and 1
-    img = fn.img_range01(img.copy(),max=255)
+    ##img = fn.img_range01(img.copy(),max=255)
 
 
 
