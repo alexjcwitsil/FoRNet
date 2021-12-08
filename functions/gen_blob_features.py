@@ -23,6 +23,10 @@ def gen_blob_features(img, gaus_sig, chan):
     hsv_img = rgb2hsv(img)
     gray_img = hsv_img[:,:,chan]
 
+    ## scale the image between 0 and 1
+    img = fn.img_range01(img.copy(), max=255)
+
+
 
     ##################
     # Blob Detection #

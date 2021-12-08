@@ -8,6 +8,15 @@ def gen_segmented_features(img,
                            label_info,
                            parsed_label_info):
     
+
+
+
+    ## normalize image between 0 and 1
+    img = fn.img_range01(img.copy(),max=255)
+
+
+
+
     ## check if the raw image is grayscale or color.
     ## and force it to color (i.e. have 3 dimensions)
     if len(img.shape) == 2:

@@ -133,6 +133,11 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
                 cur_features = sc.transform(blob_features_unnorm)
 
 
+
+                plt.close('all')
+                plt.hist(blob_features_unnorm.iloc[:,9])
+
+
                 ########################
                 ### MAKE PREDICTIONS ###
                 ########################
