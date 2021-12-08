@@ -10,6 +10,7 @@ import pandas as pd
 from scipy.stats import kurtosis, skew
 from scipy.stats import norm
 import cv2
+import fornet as fn
 
 from skimage import transform
 
@@ -57,6 +58,15 @@ def calc_feature_stats(vals, xy_inds, img_shape):
     
     ## crop the segmented image
     crop_seg = seg_img[np.min(x_inds):np.max(x_inds)+1, np.min(y_inds):np.max(y_inds)+1]
+
+    
+
+
+    ## try normalizing the cropped segmented image between 0 and 255
+    crop_seg = fn.range01(crop_seg)*255
+
+
+
 
     from skimage.feature import greycomatrix, greycoprops
 
