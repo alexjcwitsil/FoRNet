@@ -63,7 +63,7 @@ def calc_feature_stats(vals, xy_inds, img_shape):
 
 
     ## try normalizing the cropped segmented image between 0 and 255
-    crop_seg = fn.range01(crop_seg)*255
+    ##crop_seg = fn.range01(crop_seg)*255
 
 
 
