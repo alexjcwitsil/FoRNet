@@ -10,7 +10,7 @@ import fornet as fn
 from skimage.color import rgb2hsv
 import numpy as np
 
-def gen_blob_features(img, gaus_sig, chan):
+def gen_blob_features(img, gaus_sig, chan, img_meta):
 
     #######################
     # Image Preprocessing #
@@ -46,7 +46,7 @@ def gen_blob_features(img, gaus_sig, chan):
     # FEATURE EXTRACTION #
     ######################
 
-    blob_info = fn.extract_blob_features(img, blob_img)
+    blob_info = fn.extract_blob_features(img, blob_img, img_meta)
 
 
     return(blob_info)

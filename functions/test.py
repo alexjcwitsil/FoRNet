@@ -133,9 +133,9 @@ def test(project_path, gaus_sigs,bkg_ignore=False):
                 cur_features = sc.transform(blob_features_unnorm)
 
 
-
-                plt.close('all')
-                plt.hist(blob_features_unnorm.iloc[:,9])
+                ## QUICK PLOTTING ##
+                # plt.close('all')
+                # plt.hist(cur_features[:,0])
 
 
                 ########################

@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import kurtosis, skew
 
-def extract_blob_features(raw_img, blob_img):
+def extract_blob_features(raw_img, blob_img, img_meta):
 
     ## check if the raw image is grayscale or color.
     ## and force it to color (i.e. have 3 dimensions)
@@ -55,7 +55,9 @@ def extract_blob_features(raw_img, blob_img):
 
 
             ## calculate the feature statistics
-            cur_chan_stats = fn.calc_feature_stats(cur_blob_vals, cur_blob_xys, cur_img_chan.shape)
+            org_chan_mean = img_meta[0][j]
+            org_chan_std = img_meta[1][j]
+            cur_chan_stats = fn.calc_feature_stats(cur_blob_vals, cur_blob_xys, cur_img_chan.shape, org_chan_mean, org_chan_std)
             ##cur_chan_stats = calc_feature_stats(cur_blob_vals, cur_blob_xys, cur_img_chan.shape)
 
 

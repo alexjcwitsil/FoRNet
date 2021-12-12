@@ -6,7 +6,7 @@ import pandas as pd
 def gen_segmented_features(img,
                            cur_img_file,
                            label_info,
-                           parsed_label_info):
+                           parsed_label_info, img_meta):
     
 
 
@@ -101,8 +101,10 @@ def gen_segmented_features(img,
             ## get the segmentation values from the current image
             cur_seg_vals = cur_img_chan[seg_ys, seg_xs]
 
+            org_chan_mean = img_meta[0][j]
+            org_chan_std = img_meta[1][j]
             ## calculate the current channel feature statistics
-            cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys_flip, cur_img_chan.shape)
+            cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys_flip, cur_img_chan.shape, org_chan_mean, org_chan_std)
 
             # set up a prefix to name the columns based on the current channel
             chan_name = 'chan' + str(j) + '_'
@@ -161,8 +163,13 @@ def gen_segmented_features(img,
         ## also save the current segementation values
         cur_seg_vals =  bkg_img[:,:,j][seg_ys, seg_xs]
 
+        
+        ## pull out the original channel mean and std from the image meta information
+        org_chan_mean = img_meta[0][j]
+        org_chan_std = img_meta[1][j]
+
         ## calculate the current channel feature statistics
-        cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys, bkg_img.shape[0:2])
+        cur_chan_stats = fn.calc_feature_stats(cur_seg_vals, seg_xys, bkg_img.shape[0:2], org_chan_mean, org_chan_std)
 
         # set up a prefix to name the columns based on the current channel
         chan_name = 'chan' + str(j) + '_'

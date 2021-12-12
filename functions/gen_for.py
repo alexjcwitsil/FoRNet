@@ -1,7 +1,7 @@
 import fornet as fn
 
 
-def gen_for(img, sig, channel, img_file, label_info, parsed_label_info=None):
+def gen_for(img, sig, channel, img_file, label_info, parsed_label_info=None, img_meta=None):
 
 
     ###########################
@@ -18,14 +18,14 @@ def gen_for(img, sig, channel, img_file, label_info, parsed_label_info=None):
     ############################
 
     ## Get blobs associated with the current channel. 
-    img_blob_info = fn.gen_blob_features(img, sig, chan=channel)
+    img_blob_info = fn.gen_blob_features(img, sig, chan=channel, img_meta=img_meta)
 
 
     #################################
     ## GENERATE SEGMENTED FEATURES ##
     #################################
 
-    img_seg_info = fn.gen_segmented_features(img, img_file, label_info, parsed_label_info)
+    img_seg_info = fn.gen_segmented_features(img, img_file, label_info, parsed_label_info, img_meta)
 
 
     ##############################

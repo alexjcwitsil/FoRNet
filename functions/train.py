@@ -75,6 +75,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
 
         ## read in a dummy image to see how many channels there are
         dme_img = fn.load_image(raw_img_path + img_files[0], gray=False, norm_chans=True)
+        
 
         ## how many channels are there
         num_chans = dme_img.shape[2]
@@ -102,7 +103,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
 
                     ## load in the current image
                     img = fn.load_image(img_path, gray=False, odd_dims=True, norm_chans=True)
-
+                    img_meta = fn.load_img_meta(img_path)
 
 
 
@@ -117,7 +118,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
                     ### GENERATE FEATURES OF REGIONS ###
                     ####################################
 
-                    img_features_unnorm = fn.gen_for(img, cur_sig, cur_chan, cur_img_file, label_info, parsed_label_info=parsed_label_info)
+                    img_features_unnorm = fn.gen_for(img, cur_sig, cur_chan, cur_img_file, label_info, parsed_label_info=parsed_label_info, img_meta=img_meta)
 
 
                     ########################################
