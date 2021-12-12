@@ -61,7 +61,11 @@ def stack_reduce_labels(labels, probabilities):
         cur_prob_stack[label_stack != cur_lab] = 0
 
         cur_weighted_stack = cur_label_stack * cur_prob_stack
-        cur_weighted_label = np.mean(cur_weighted_stack, axis=0)
+        
+        ## stack according to the mean, median, or max. 
+        ##cur_weighted_label = np.median(cur_weighted_stack, axis=0)
+        cur_weighted_label = np.max(cur_weighted_stack, axis=0)
+        ##cur_weighted_label = np.mean(cur_weighted_stack, axis=0)
 
         ## save the current weighted label
         weighted_labels[i,:,:] = cur_weighted_label
