@@ -42,18 +42,5 @@ def load_image(path, gray=True, odd_dims=False, norm_chans=False):
     #
 
 
-
-
-
-    ## force image to have positive values only
-    if np.min(img) < 0:
-        img = img - np.min(img)
-    #
-
-
-
-
-
-
     return(img)
 
