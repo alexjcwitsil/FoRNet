@@ -103,7 +103,7 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
 
                     ## load in the current image
                     img = fn.load_image(img_path, gray=False, odd_dims=True, norm_chans=True)
-                    img_meta = fn.load_img_meta(img_path)
+                    img_meta = fn.load_img_meta(img_path, gray=False, odd_dims=True)
 
 
 
