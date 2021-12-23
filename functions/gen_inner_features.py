@@ -71,11 +71,25 @@ def gen_inner_features(blob_info, true_img):
             ## check if there is any overlap at all btwn the blob and current segment
             any_overlap = (overlap_img > 1).any()
 
-            ## check if the the blob is completely within the current segment
-            blob_fully_in_segment = (overlap_img == 1).any() == False
+            # ## check if the the blob is completely within the current segment
+            # blob_fully_in_segment = (overlap_img == 1).any() == False
+
+            # ## put these two check together
+            # inner_blob_check = any_overlap & blob_fully_in_segment
+
+
+
+            ### UNCOMMENT FOR 51 OVERLAP ###
+            ## calculate the amount of overlap (as percent)
+            perc_overlap = len(np.where(overlap_img == 2)[0]) / len(np.where(overlap_img >= 1)[0])
+
+            ## check if there is enough overlap btwn the blob and current segment
+            blob_partially_in_segment = perc_overlap > 0.50
 
             ## put these two check together
-            inner_blob_check = any_overlap & blob_fully_in_segment
+            inner_blob_check = any_overlap & blob_partially_in_segment
+
+
 
             ## define boolean object stating if there is overlap
             ##overlap_bool = (overlap_img < 2).any()
