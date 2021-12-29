@@ -40,6 +40,14 @@ def gen_inner_features(blob_info, true_img):
     ## how many unique segment id labels are there in the image
     unique_labs = np.unique(true_img)
 
+
+
+    ## make a copy of the all_blob_xys and all_blob_stats
+    updated_blob_xys = list(all_blob_xys[:])
+    updated_blob_stats = all_blob_stats[:]
+
+
+
     ## loop over each unique label
     i=0
     while i < len(unique_labs):
@@ -56,10 +64,13 @@ def gen_inner_features(blob_info, true_img):
 
         ## loop over all blobs
         j=0
-        while j < len(all_blob_xys):
+        ##while j < len(all_blob_xys):
+        while j < len(updated_blob_xys):
 
             # what is the current blob xy indices
-            cur_blob_inds = all_blob_xys[j]
+            ## cur_blob_inds = all_blob_xys[j]
+            cur_blob_inds = updated_blob_xys[j]
+            
 
             ## build a binary image populated soley by this blob
             blob_img = np.zeros(true_img.shape)
@@ -106,9 +117,14 @@ def gen_inner_features(blob_info, true_img):
             n_inner_features = n_inner_features + 1 
 
             ## if the blob is completetly within the current segment, grab the blob statistics
-            cur_blob_stats = all_blob_stats.iloc[j]
+            ##cur_blob_stats = all_blob_stats.iloc[j]
+            cur_blob_stats = updated_blob_stats.iloc[j]
 
-            
+
+            ## update the blob stats and xy_inds
+            updated_blob_stats.drop(updated_blob_stats.index[j], axis=0, inplace=True)
+            del updated_blob_xys[j]
+
             ######################################
             ### APPEND STATISTICS TO DATAFRAME ###
             ######################################
