@@ -22,8 +22,8 @@ def calc_feature_stats(vals, xy_inds, img_shape, img_mean, img_std):
     ## stat_names = ["sum", "mean", "sd", "skew", "kurt","median", "25_perc", "50_perc", "75_perc", "max_freq_dist"]
 
     ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_contrast", "texture_dissimilarity", "texture_homogeneity", "texture_asm", "texture_energy", "texture_correlation"]
-    stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_contrast", "texture_dissimilarity", "texture_homogeneity", "texture_correlation"]
-    ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc"]
+    ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_contrast", "texture_dissimilarity", "texture_homogeneity", "texture_correlation"]
+    stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc"]
     ##stat_names = ["mean", "sd", "skew", "kurt", "median", "25_perc", "50_perc", "75_perc", "texture_dissimilarity"]
 
 
@@ -176,8 +176,8 @@ def calc_feature_stats(vals, xy_inds, img_shape, img_mean, img_std):
 
     
     ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_contrast, texture_dissimilarity, texture_homogeneity, texture_asm, texture_energy, texture_correlation]
-    stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_contrast, texture_dissimilarity, texture_homogeneity, texture_correlation]
-    ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc]
+    ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_contrast, texture_dissimilarity, texture_homogeneity, texture_correlation]
+    stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc]
     ##stats_list = [val_mean, val_sd, val_skew, val_kurt, val_median, val_25perc, val_50perc, val_75perc, texture_dissimilarity]
 
 
