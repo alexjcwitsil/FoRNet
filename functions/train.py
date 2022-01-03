@@ -184,16 +184,24 @@ def train(project_path, gaus_sigs, bkg_ignore=False, extract_features=True, run_
                 ## saving dir
                 save_dir = project_path+'/results/nn_models/sig'+str(cur_sig)+'/'
 
-                ## scaling factors and model file name
+                ## scaling factors, model, and history file name
                 scaling_factors_file = 'chan'+str(cur_chan)+'_scaling_factors.pickle'
                 model_file = 'chan' + str(cur_chan) + '_vanilla_model.h5'
+                history_file = 'chan' + str(cur_chan) + '_history'
 
                 ## save the scaling factors in the data
                 with open(save_dir + scaling_factors_file,'w+b') as handle:
                     pickle.dump(scaling_factors, handle)
+                #
+                ## Save the training history 
+                with open(save_dir + history_file, 'wb') as history_file:
+                    pickle.dump(model_history, history_file)
+                #
+
 
                 # save model and architecture to single file
                 model.save(save_dir + model_file)
+
             #
 
 
